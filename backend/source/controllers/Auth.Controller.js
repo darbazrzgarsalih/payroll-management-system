@@ -63,6 +63,7 @@ export const login = async (req, res, next) => {
         return res.status(200).json({
             success: true,
             message: `Logged in as ${user.username}`,
+            token,
             user
         })
 
@@ -94,7 +95,7 @@ export const logout = async (req, res, next) => {
             message: `Logged out.`,
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not logout, please try again."))
     }
 }
@@ -143,7 +144,7 @@ export const changePassword = async (req, res, next) => {
         })
 
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not change password, please try again."))
     }
 }
@@ -191,26 +192,26 @@ export const forgotPassword = async (req, res, next) => {
 
         const user = await User.findOne({ email: email.toLowerCase().trim() });
         if (!user) {
-            
+
             return res.status(200).json({ success: true, message: 'If this email exists, a 6-digit code has been sent.' });
         }
 
-        
+
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const hashedOTP = crypto.createHash('sha256').update(otp).digest('hex');
 
         user.resetOTP = hashedOTP;
-        user.resetOTPExpires = new Date(Date.now() + 15 * 60 * 1000); 
+        user.resetOTPExpires = new Date(Date.now() + 15 * 60 * 1000);
         await user.save();
 
         try {
-            
+
             await sendPasswordResetEmail({ to: user.email, name: user.firstName || user.username, otp });
-            
+
         } catch (emailError) {
             console.error(`[forgotPassword] Failed to send email to ${user.email}:`, emailError.message);
-            
-            
+
+
         }
 
         return res.status(200).json({ success: true, message: 'If this email exists, a 6-digit code has been sent.' });
