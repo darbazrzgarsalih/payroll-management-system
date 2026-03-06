@@ -11,9 +11,9 @@ import { useCreateShifts, useShifts } from "./shift.hooks"
 
 
 export const CreateShift = () => {
-    const { refetch } = useShifts()
-    const { loading, error, handleChange, submitted, form, createShift } = useCreateShifts({ refetch })
-    const isInvalid = (value: string) => submitted && !value
+  const { refetch } = useShifts()
+  const { loading, error, handleChange, submitted, form, createShift } = useCreateShifts({ refetch })
+  const isInvalid = (value: string) => submitted && !value
   return (
     <Dialog>
       <DialogTrigger asChild>
