@@ -1,7 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import { connectDB } from './source/configuration/database.js'
+import { connectDB } from './source/configuration/Database.js'
 import dotenv from 'dotenv'
 import { errorHandler } from './source/middlewares/Error.Middleware.js'
 import routes from './source/routes.js'
