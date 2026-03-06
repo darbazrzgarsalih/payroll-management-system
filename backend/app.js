@@ -9,7 +9,6 @@ import morgan from 'morgan'
 import { apiLimiter } from './source/middlewares/Rate.Limitter.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { registerUser } from './source/seeders/Admin.Seeder.js'
 dotenv.config()
 
 const __filename = fileURLToPath(import.meta.url)
@@ -33,7 +32,6 @@ app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
 
 await connectDB()
-await registerUser()
 
 app.use(routes)
 app.use('/documents', express.static(path.join(__dirname, 'documents')))
