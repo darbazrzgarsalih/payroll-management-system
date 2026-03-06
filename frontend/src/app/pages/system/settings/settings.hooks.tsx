@@ -19,6 +19,8 @@ export type SettingsData = {
         phone: string
         website: string
     }
+    taxID?: string
+    registrationNumber?: string
 }
 
 export function useSettings() {

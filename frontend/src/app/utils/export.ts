@@ -17,7 +17,7 @@ export function downloadCSV(data: any[], filename: string, headers: string[], ke
                 }
             }
 
-            
+
             const escaped = ('' + val).replace(/"/g, '""');
             return `"${escaped}"`;
         });
@@ -27,10 +27,10 @@ export function downloadCSV(data: any[], filename: string, headers: string[], ke
     const csvContent = csvRows.join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-    
-    if (navigator.msSaveBlob) {
-        
-        navigator.msSaveBlob(blob, filename);
+
+    if ((navigator as any).msSaveBlob) {
+
+        (navigator as any).msSaveBlob(blob, filename);
     } else {
         const url = URL.createObjectURL(blob);
         link.href = url;

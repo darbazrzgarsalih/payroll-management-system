@@ -34,7 +34,7 @@ export function usePunishments() {
 
         try {
             const res = await api.get('/punishments', {
-                params: { 
+                params: {
                     page, limit,
                     status: status && status !== "all_status" ? status : undefined,
                     name: search ? search.trim() : undefined,
@@ -42,7 +42,7 @@ export function usePunishments() {
             })
             setPunishments(res.data.punishments)
             setTotal(res.data.total)
-        } catch (error) {
+        } catch (error: any) {
             setError(error?.response?.data?.message || "Failed to fetch punishments")
         } finally {
             setLoading(false)
@@ -60,7 +60,7 @@ export function usePunishments() {
         } catch (err: any) {
             setError(err?.response?.data?.message || "Cannot void punishment")
             return false
-        }finally {
+        } finally {
             setActionLoading(null)
         }
     }
@@ -143,7 +143,7 @@ export function useCreatePunishments() {
             })
             toast.success('Punishment has been created successfully')
         } catch (error) {
-            
+
         } finally {
             setLoading(false)
         }

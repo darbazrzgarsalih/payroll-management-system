@@ -10,8 +10,8 @@ import Positions from "../pages/people/positions/Positions";
 import LeaveType from '../pages/Attendance&time/leavetype/LeaveType'
 import Overtime from "../pages/Attendance&time/overtime/Overtime";
 import PayrollRun from "../pages/payroll/payrollRuns/PayrollRun";
-import Payslips from "../pages/payroll/Payslips/Payslips";
-import MyPayslips from "../pages/payroll/Payslips/MyPayslips";
+import Payslips from "../pages/payroll/payslips/payslips";
+import MyPayslips from "../pages/payroll/payslips/my-payslips";
 import Salary from "../pages/payroll/salary/Salary";
 import SalaryComponent from "../pages/payroll/salarycomponent/SalaryComponent";
 import Paygrade from "../pages/payroll/paygrade/Paygrade";

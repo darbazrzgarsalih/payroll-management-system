@@ -12,13 +12,13 @@ interface RoleRouteProps {
 export default function RoleRoute({ permission, children }: RoleRouteProps) {
 
     const { user, loading, hasAccess } = useContext(AuthContext);
-    
-    
-    
+
+
+
     if (loading) return <Spinner />;
     if (!user) return <Navigate to={'/login'} />;
-    if (!hasAccess(permission)) {
-        
+    if (permission && !hasAccess(permission)) {
+
         return <Navigate to={'/app/dashboard'} replace />;
     }
     return <>{children}</>;
