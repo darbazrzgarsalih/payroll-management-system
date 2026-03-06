@@ -18,7 +18,15 @@ const port = Number(process.env.PORT || 8001)
 const app = express()
 
 app.use(express.json())
-app.use(cors({ credentials: true, origin: String(process.env.CLIENT_URL || 'http://localhost:5174') }))
+
+const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, "") : 'http://localhost:5174';
+
+app.use(cors({
+    credentials: true,
+    origin: [clientUrl, 'http://localhost:5173', 'http://localhost:5174'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+}))
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
@@ -30,5 +38,5 @@ app.use('/documents', express.static(path.join(__dirname, 'documents')))
 app.use(errorHandler)
 
 app.listen(port, () => {
-    
+
 })
