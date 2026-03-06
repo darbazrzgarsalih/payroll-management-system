@@ -30,7 +30,7 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    
+
     React.useEffect(() => {
         const token = localStorage.getItem("token")
         if (token) {
@@ -54,13 +54,27 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
 
             localStorage.setItem("token", res.data.token)
             localStorage.setItem("user", JSON.stringify(res.data.user))
-            
+
             setUser(res.data.user)
             return { success: true, user: res.data.user }
         } catch (err: any) {
-            const msg = err?.response?.data?.message || "Login failed";
+            console.error("Login attempt failed:", {
+                message: err.message,
+                response: err.response?.data,
+                status: err.response?.status,
+                url: err.config?.url
+            });
+
+            let msg = "Login failed";
+            if (err.message === "Network Error") {
+                msg = "Cannot connect to server. Check VITE_API_URL in Vercel settings.";
+            } else if (err.response?.data?.message) {
+                msg = err.response.data.message;
+            } else if (err.response?.status === 401) {
+                msg = "Incorrect username or password";
+            }
+
             setError(msg)
-            
             return { success: false, error: msg }
         } finally {
             setLoading(false)

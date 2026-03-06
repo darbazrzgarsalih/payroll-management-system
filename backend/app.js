@@ -19,7 +19,16 @@ const app = express()
 
 app.use(express.json())
 
-const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, "") : 'http://localhost:5174';
+const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim().replace(/\/$/, "") : 'http://localhost:5174';
+
+app.get('/api/v1/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        clientUrl,
+        nodeEnv: process.env.NODE_ENV,
+        dbConnected: mongoose.connection.readyState === 1
+    })
+})
 
 app.use(cors({
     credentials: true,
