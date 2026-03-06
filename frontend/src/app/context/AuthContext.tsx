@@ -32,9 +32,6 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
 
 
     React.useEffect(() => {
-        console.log("Auth System initialized. API BaseURL:", api.defaults.baseURL);
-        console.log("VITE_API_URL Env:", import.meta.env.VITE_API_URL);
-
         const token = localStorage.getItem("token")
         if (token) {
             api.get('/auth/profile').then(res => {

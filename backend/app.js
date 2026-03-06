@@ -45,11 +45,12 @@ app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'))
 
 await connectDB()
+await registerUser()
 
 app.use(routes)
 app.use('/documents', express.static(path.join(__dirname, 'documents')))
 app.use(errorHandler)
 
 app.listen(port, () => {
-
+    console.log(`Server listening to port: ${port}`)
 })
