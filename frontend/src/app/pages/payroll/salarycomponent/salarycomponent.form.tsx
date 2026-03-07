@@ -4,9 +4,12 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Spinner } from "@/components/ui/spinner"
 import { Plus } from "lucide-react"
 import { useCreateSalaryComponents } from "./salarycomponent.hooks"
+import { usePaygrades } from "../paygrade/paygrade.hooks"
+import { SelectField } from "@/app/components/SelectField"
 
 export const CreateSalaryComponent = () => {
-    const { loading, error, submitted, form, handleChange, createSalaryComponent } = useCreateSalaryComponents()
+    const { paygrades } = usePaygrades()
+    const { loading, error, submitted, form, handleChange, createSalaryComponent, handleSelectChange } = useCreateSalaryComponents()
     const isInvalid = (value: string) => submitted && !value
 
     return (
@@ -17,18 +20,17 @@ export const CreateSalaryComponent = () => {
                 </DialogTrigger>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>New Leavetype</DialogTitle>
-                        <DialogDescription>assign new leavetype for simplifying your work.</DialogDescription>
+                        <DialogTitle>New Salary Component</DialogTitle>
+                        <DialogDescription>Create a new salary component for your payroll system.</DialogDescription>
                     </DialogHeader>
 
                     <form onSubmit={createSalaryComponent} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <FormField
+                        <SelectField
                             label="Paygrade"
                             name="payGradeID"
                             value={form.payGradeID}
-                            placeholder="pay grade"
-                            onChange={handleChange}
-                            required
+                            options={paygrades.map(pg => ({ value: pg.id || (pg as any)._id, label: pg.name }))}
+                            onChange={handleSelectChange}
                             submitted={submitted}
                         />
                         <FormField

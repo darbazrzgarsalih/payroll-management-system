@@ -27,7 +27,7 @@ export const CreatePaygrade = () => {
                             label="Name"
                             name="name"
                             value={form.name}
-                            placeholder="employee"
+                            placeholder="name"
                             onChange={handleChange}
                             required
                             submitted={submitted}
@@ -36,7 +36,7 @@ export const CreatePaygrade = () => {
                             label="level"
                             name="level"
                             value={form.level}
-                            placeholder="employee"
+                            placeholder="eg. 1, 2"
                             onChange={handleChange}
                             required
                             submitted={submitted}
@@ -45,7 +45,7 @@ export const CreatePaygrade = () => {
                             label="minSalary"
                             name="minSalary"
                             value={form.minSalary}
-                            placeholder="employee"
+                            placeholder="0"
                             onChange={handleChange}
                             type="number"
                             required
@@ -55,7 +55,7 @@ export const CreatePaygrade = () => {
                             label="maxSalary"
                             name="maxSalary"
                             value={form.maxSalary}
-                            placeholder="employee"
+                            placeholder="0"
                             onChange={handleChange}
                             type="number"
                             required

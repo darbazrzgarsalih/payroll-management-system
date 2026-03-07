@@ -32,10 +32,11 @@ export function useSalaryComponents() {
 
         try {
             const res = await api.get('/salary-components', {
-                params: { page, limit,
+                params: {
+                    page, limit,
                     status: status && status !== "all_status" ? status : undefined,
                     name: search ? search.trim() : undefined
-                 }
+                }
             })
             setSalaryComponents(res.data.salaryComponents)
             setTotal(res.data.total)
@@ -64,7 +65,7 @@ export function useSalaryComponents() {
 
     useEffect(() => {
         fetchSalaryComponents()
-    }, [page,  search, status])
+    }, [page, search, status])
 
 
     useEffect(() => {
@@ -118,6 +119,14 @@ export function useCreateSalaryComponents() {
         setError(null)
     }
 
+    const handleSelectChange = (name: string, value: string) => {
+        setForm(prev => ({
+            ...prev,
+            [name]: value
+        }))
+        setError(null)
+    }
+
     const createSalaryComponent = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
@@ -133,7 +142,7 @@ export function useCreateSalaryComponents() {
 
             toast.success("Salary component has been created successfully")
         } catch (error: any) {
-            
+
         } finally {
             setLoading(false)
         }
@@ -145,6 +154,7 @@ export function useCreateSalaryComponents() {
         submitted,
         form,
         handleChange,
+        handleSelectChange,
         createSalaryComponent,
     }
 }
@@ -203,8 +213,8 @@ export function useEditSalaryComponents({ refetch }: { refetch: () => void }) {
     }
 
     const submitEdit = async () => {
-        if(!salaryComponentId) return
-        if(initialForm && JSON.stringify(form) === JSON.stringify(initialForm)) {
+        if (!salaryComponentId) return
+        if (initialForm && JSON.stringify(form) === JSON.stringify(initialForm)) {
             toast.info("No update data provided")
             return
         }
@@ -228,10 +238,10 @@ export function useEditSalaryComponents({ refetch }: { refetch: () => void }) {
             closeEdit()
         } catch (err: any) {
             setError(err?.response?.data?.message || "Cannot edit salary component")
-        }finally {
+        } finally {
             setLoading(false)
         }
-     }
+    }
 
     return {
         open,
