@@ -19,6 +19,9 @@ const __dirname = path.dirname(__filename)
 const port = Number(process.env.PORT || 8001)
 const app = express()
 
+// Trust proxy for correct IP detection in hosted environments
+app.set('trust proxy', true)
+
 const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim().replace(/\/$/, "") : 'http://localhost:5174';
 
 app.use(cors({

@@ -16,9 +16,9 @@ export const logAudit = async ({
             entityID,
             oldValue,
             newValue,
-            ipAddress: req.ip
+            ipAddress: req.headers['x-forwarded-for']?.split(',')[0] || req.ip || req.connection.remoteAddress
         })
     } catch (error) {
-        
+
     }
 }
