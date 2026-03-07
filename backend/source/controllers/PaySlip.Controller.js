@@ -12,6 +12,10 @@ import { BadRequestError, NotFoundError, InternalServerError } from '../utils/Er
 import { logAudit } from '../utils/Audit.Logger.js';
 import { generatePayslipPDF } from '../services/PDF.Service.js';
 import { sendPayslipApprovalEmail } from '../services/Email.Service.js';
+import Reward from '../models/Reward.Model.js';
+import Overtime from '../models/Overtime.Model.js';
+import Deduction from '../models/Deduction.Model.js';
+import Punishment from '../models/Punishment.Model.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PAYSLIPS_DIR = path.join(__dirname, '..', '..', '..', 'payslips');
@@ -183,12 +187,12 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
                                 amount: c.amount || 0
                             })),
                         rewards: (item.rewards ?? []).map(r => ({
-                            description: r.reason || r.type || r.name || 'Reward',
-                            amount: Number(r.amount || 0)
+                            description: (typeof r === 'object' ? (r.reason || r.name || r.type) : '') || 'Reward',
+                            amount: Number((typeof r === 'object' ? r.amount : item.totalRewards) || 0)
                         })),
                         overtimes: (item.overtimes ?? []).map(o => ({
-                            description: o.remarks || `Overtime (${o.hours || 0}h)`,
-                            amount: Number(o.amount || 0)
+                            description: (typeof o === 'object' ? (o.remarks || o.type) : '') || `Overtime (${o.hours || 0}h)`,
+                            amount: Number((typeof o === 'object' ? o.amount : item.totalOvertimes) || 0)
                         })),
                         deductions: [
                             ...(item.componentBreakdown ?? [])
@@ -224,7 +228,7 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
                                 amount: amt
                             };
                         }),
-                        grossPay: item.grossPay || (item.baseSalary + (item.totalRewards || 0) + (item.totalOvertimes || 0)),
+                        grossPay: Number(item.baseSalary || 0) + Number(item.totalRewards || 0) + Number(item.totalOvertimes || 0),
                         netPay: item.netPay,
                         payDate: item.paymentDate || new Date(),
                         status: 'draft',

@@ -148,7 +148,8 @@ export async function generatePayslipPDF(payslip) {
             doc.font(bold ? 'Helvetica-Bold' : 'Helvetica')
                 .fillColor(bold ? C.textDark : C.textMid)
                 .fontSize(9.5);
-            doc.text('  ' + (label || 'Item'), MARGIN, y + 1, { width: INNER * 0.65 });
+            const rowLabel = (label && label !== 'undefined' && String(label).trim() !== '') ? label : 'Item';
+            doc.text('  ' + rowLabel, MARGIN, y + 1, { width: INNER * 0.65 });
             doc.text(fmt(amount), MARGIN, y + 1, { width: INNER - 8, align: 'right' });
             y += 18;
         };
