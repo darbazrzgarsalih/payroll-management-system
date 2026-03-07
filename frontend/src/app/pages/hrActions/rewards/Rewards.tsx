@@ -23,9 +23,14 @@ function Rewards() {
     setPage,
     search,
     setSearch,
-    status,
-    setStatus
-  } = useRewards()
+    // Remove status and setStatus from useRewards destructuring
+    // as they are now managed locally and passed to the hook
+  } = useRewards({
+    status: status === "all" ? undefined : status, // Pass status to hook, handle "all"
+    page,
+    limit,
+    search,
+  })
   const edit = useEditRewards({ refetch })
 
   const tableData: RewardRow[] = rewards.map((reward, index) => ({
@@ -86,7 +91,7 @@ function Rewards() {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Statuses</SelectItem>
+              <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="paid">Paid</SelectItem>
               <SelectItem value="voided">Voided</SelectItem>

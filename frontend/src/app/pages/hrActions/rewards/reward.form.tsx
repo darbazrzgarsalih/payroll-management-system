@@ -138,7 +138,7 @@ export const BulkCreateReward = () => {
                                 name="payrollID"
                                 value={form.payrollID}
                                 options={payrolls.map((p: any) => ({
-                                    value: p._id || "",
+                                    value: p._id || "no-id",
                                     label: `${p.startDate} - ${p.endDate}`,
                                 }))}
                                 onChange={handleSelectChange}
@@ -165,7 +165,7 @@ export const BulkCreateReward = () => {
                         <MultiSelectEmployees
                             label="Select Employees"
                             options={employees.map(e => ({
-                                value: e.id || "",
+                                value: e.id || "no-id",
                                 label: e.employeeName,
                             }))}
                             selectedValues={form.employeeIDs}
