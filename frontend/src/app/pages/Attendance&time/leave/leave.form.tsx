@@ -33,7 +33,7 @@ export const ApplyLeave = () => {
     useEffect(() => {
         const fetchLeaveTypes = async () => {
             try {
-                const res = await api.get('/leavetypes')
+                const res = await api.get('/leave-types')
                 setLeaveTypes(res.data.leaveTypes || [])
             } catch (err) {
                 console.error("Failed to fetch leave types", err)
