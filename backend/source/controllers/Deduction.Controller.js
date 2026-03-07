@@ -39,6 +39,8 @@ export const createDeduction = async (req, res, next) => {
             frequency,
             startDate,
             endDate,
+            totalAmount: amount,
+            remainingAmount: amount,
             createdBy: req.user._id,
         })
 
@@ -75,10 +77,10 @@ export const getAllDeductions = async (req, res, next) => {
         }
 
 
-        if(status) {
+        if (status) {
             queryObject.status = status
         }
-        
+
         if (employeeID) {
             if (!mongoose.Types.ObjectId.isValid(employeeID)) {
                 return next(new BadRequestError("Invalid ID"))
@@ -108,8 +110,8 @@ export const getAllDeductions = async (req, res, next) => {
                 frequency: d.frequency,
                 startDate: d.startDate,
                 endDate: d.endDate,
-                totalAmount: d.totalAmount,
-                remainingAmount: d.remainingAmount,
+                totalAmount: d.totalAmount || d.amount,
+                remainingAmount: d.remainingAmount !== undefined ? d.remainingAmount : d.amount,
                 status: d.status
             }
         })
@@ -122,7 +124,7 @@ export const getAllDeductions = async (req, res, next) => {
             deductions: transformedDeduction
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch deductions"))
     }
 }

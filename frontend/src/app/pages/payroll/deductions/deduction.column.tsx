@@ -31,12 +31,12 @@ export const DeductionColumn = ({
         {
             header: 'START DATE',
             accessor: 'startDate',
-            cell: row => new Date(row.startDate).toLocaleTimeString()
+            cell: row => new Date(row.startDate).toLocaleDateString()
         },
         {
             header: 'END DATE',
             accessor: 'endDate',
-            cell: row => new Date(row.endDate).toLocaleTimeString()
+            cell: row => new Date(row.endDate).toLocaleDateString()
         },
         { header: 'TOTAL AMOUNT', accessor: 'totalAmount' },
         { header: 'REMAINING AMOUNT', accessor: 'remainingAmount' },
