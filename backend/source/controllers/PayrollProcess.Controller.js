@@ -145,14 +145,22 @@ export const generatePayrollItems = async (req, res, next) => {
                 employeeID: employee._id,
                 status: 'active',
                 startDate: { $lte: payroll.payPeriod.endDate },
-                endDate: { $gte: payroll.payPeriod.startDate }
+                $or: [
+                    { endDate: { $gte: payroll.payPeriod.startDate } },
+                    { endDate: { $exists: false } },
+                    { endDate: null }
+                ]
             })
 
             const deductions = await Deduction.find({
                 employeeID: employee._id,
                 status: 'active',
                 startDate: { $lte: payroll.payPeriod.endDate },
-                endDate: { $gte: payroll.payPeriod.startDate }
+                $or: [
+                    { endDate: { $gte: payroll.payPeriod.startDate } },
+                    { endDate: { $exists: false } },
+                    { endDate: null }
+                ]
             })
 
             const punishmentsSum = punishments.reduce(
@@ -423,7 +431,7 @@ export const getPayrollSummary = async (req, res, next) => {
 
         const items = await PayrollItem.find({ payrollID: payroll._id })
             .populate('employeeID', 'personalInfo.firstName personalInfo.lastName employeeCode')
-            .select('employeeID baseSalary grossPay netPay totalDeductions status')
+            .select('employeeID baseSalary grossPay netPay totalDeductions totalRewards totalOvertimes totalPunishments status')
 
         const summary = await PayrollItem.aggregate([
             {
@@ -438,6 +446,9 @@ export const getPayrollSummary = async (req, res, next) => {
                     totalGrossPay: { $sum: "$grossPay" },
                     totalDeductions: { $sum: '$totalDeductions' },
                     totalNetPay: { $sum: "$netPay" },
+                    totalRewards: { $sum: "$totalRewards" },
+                    totalOvertimes: { $sum: "$totalOvertimes" },
+                    totalPunishments: { $sum: "$totalPunishments" },
                 }
             }
         ])
@@ -446,7 +457,10 @@ export const getPayrollSummary = async (req, res, next) => {
             totalEmployees: 0,
             totalGrossPay: 0,
             totalDeductions: 0,
-            totalNetPay: 0
+            totalNetPay: 0,
+            totalRewards: 0,
+            totalOvertimes: 0,
+            totalPunishments: 0,
         }
 
 
@@ -462,6 +476,9 @@ export const getPayrollSummary = async (req, res, next) => {
                 totalGrossPay: result.totalGrossPay,
                 totalDeductions: result.totalDeductions,
                 totalNetPay: result.totalNetPay,
+                totalRewards: result.totalRewards,
+                totalOvertimes: result.totalOvertimes,
+                totalPunishments: result.totalPunishments,
                 approvedBy: payroll.approvedBy,
                 approvedAt: payroll.approvedAt,
                 paidBy: payroll.paidBy,

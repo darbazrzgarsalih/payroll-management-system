@@ -125,9 +125,10 @@ export function useCreateLeavetypes() {
                 defaultDays: form.defaultDays
             })
 
-            alert('leave type created')
+            toast.success('Leave type created successfully')
+            setForm({ name: "", defaultDays: "" })
         } catch (error: any) {
-            
+            toast.error(error?.response?.data?.message || 'Failed to create leave type')
         } finally {
             setLoading(false)
         }

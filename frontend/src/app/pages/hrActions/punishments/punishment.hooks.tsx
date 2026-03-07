@@ -142,8 +142,10 @@ export function useCreatePunishments() {
                 endDate: form.endDate
             })
             toast.success('Punishment has been created successfully')
-        } catch (error) {
-
+            setForm({ employeeID: "", name: "", type: "", amount: 0, startDate: "", endDate: "" })
+            setSubmitted(false)
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || 'Failed to create punishment')
         } finally {
             setLoading(false)
         }

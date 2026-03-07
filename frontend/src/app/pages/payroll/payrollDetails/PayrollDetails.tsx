@@ -69,7 +69,7 @@ function PayrollDetails() {
     <>
       <div className="space-y-6 print:hidden">
 
-        {}
+        { }
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <PageHeader
             title="Payroll Details"
@@ -106,7 +106,7 @@ function PayrollDetails() {
           </div>
         </div>
 
-        {}
+        { }
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -157,7 +157,7 @@ function PayrollDetails() {
           </Card>
         </div>
 
-        {}
+        { }
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-2">
             <CardHeader><CardTitle>Payroll Items</CardTitle></CardHeader>
@@ -169,6 +169,9 @@ function PayrollDetails() {
                       <TableHead>Employee</TableHead>
                       <TableHead>Base Salary</TableHead>
                       <TableHead>Gross Pay</TableHead>
+                      <TableHead>Rewards</TableHead>
+                      <TableHead>Overtimes</TableHead>
+                      <TableHead>Punishments</TableHead>
                       <TableHead>Deductions</TableHead>
                       <TableHead>Net Pay</TableHead>
                       <TableHead>Status</TableHead>
@@ -177,7 +180,7 @@ function PayrollDetails() {
                   <TableBody>
                     {items.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                        <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                           No payroll items yet — click "Generate Items" to create them
                         </TableCell>
                       </TableRow>
@@ -192,7 +195,10 @@ function PayrollDetails() {
                           </TableCell>
                           <TableCell>{formatCurrency(item.baseSalary)}</TableCell>
                           <TableCell>{formatCurrency(item.grossPay)}</TableCell>
-                          <TableCell>{formatCurrency(item.totalDeductions)}</TableCell>
+                          <TableCell className="text-green-600">+{formatCurrency(item.totalRewards || 0)}</TableCell>
+                          <TableCell className="text-blue-600">+{formatCurrency(item.totalOvertimes || 0)}</TableCell>
+                          <TableCell className="text-orange-600">-{formatCurrency(item.totalPunishments || 0)}</TableCell>
+                          <TableCell className="text-red-600">-{formatCurrency(item.totalDeductions)}</TableCell>
                           <TableCell className="font-bold">{formatCurrency(item.netPay)}</TableCell>
                           <TableCell>
                             <span className={`text-xs px-2 py-1 rounded font-semibold ${statusColors[item.status] || "bg-gray-100 text-gray-700"}`}>
@@ -323,7 +329,7 @@ function PayrollDetails() {
             </div>
           </div>
 
-          {}
+          { }
           <div className="grid grid-cols-2 gap-x-20 gap-y-8 pt-4">
             <div className="space-y-2 border-l-2 border-slate-200 pl-6">
               <p className="text-slate-400 uppercase font-black text-[10px] tracking-[0.2em]">Payroll Reference</p>
@@ -346,7 +352,7 @@ function PayrollDetails() {
             </div>
           </div>
 
-          {}
+          { }
           <div className="relative">
             <div className="absolute inset-0 bg-slate-50 -rotate-1 rounded-3xl -z-10" />
             <div className="grid grid-cols-3 gap-0 border-2 border-slate-200 bg-white rounded-2xl overflow-hidden">
@@ -367,7 +373,7 @@ function PayrollDetails() {
             </div>
           </div>
 
-          {}
+          { }
           <div className="space-y-6 pt-10">
             <div className="flex items-center gap-6">
               <h3 className="text-2xl font-black uppercase tracking-tighter">Detailed breakdown</h3>
@@ -382,6 +388,9 @@ function PayrollDetails() {
                     <th className="p-5 border-r border-slate-700">Employee Details</th>
                     <th className="p-5 border-r border-slate-700">Base Salary</th>
                     <th className="p-5 border-r border-slate-700">Gross Amount</th>
+                    <th className="p-5 border-r border-slate-700">Rewards</th>
+                    <th className="p-5 border-r border-slate-700">Overtimes</th>
+                    <th className="p-5 border-r border-slate-700">Punishments</th>
                     <th className="p-5 border-r border-slate-700">Deductions</th>
                     <th className="p-5 text-right">Net Payment</th>
                   </tr>
@@ -395,6 +404,9 @@ function PayrollDetails() {
                       </td>
                       <td className="p-5 border-r-2 border-slate-100 font-bold text-slate-700 italic">{formatCurrency(item.baseSalary)}</td>
                       <td className="p-5 border-r-2 border-slate-100 font-bold text-black">{formatCurrency(item.grossPay)}</td>
+                      <td className="p-5 border-r-2 border-slate-100 font-bold text-green-600">+{formatCurrency(item.totalRewards || 0)}</td>
+                      <td className="p-5 border-r-2 border-slate-100 font-bold text-blue-600">+{formatCurrency(item.totalOvertimes || 0)}</td>
+                      <td className="p-5 border-r-2 border-slate-100 font-bold text-orange-600">-{formatCurrency(item.totalPunishments || 0)}</td>
                       <td className="p-5 border-r-2 border-slate-100 font-black text-red-500">-{formatCurrency(item.totalDeductions)}</td>
                       <td className="p-5 text-right font-black text-2xl text-green-700 tracking-tighter italic">{formatCurrency(item.netPay)}</td>
                     </tr>
@@ -404,10 +416,10 @@ function PayrollDetails() {
             </div>
           </div>
 
-          {}
+          { }
           <div className="grow pt-20" />
 
-          {}
+          { }
           <div className="grid grid-cols-2 gap-24 pt-16 print-section">
             <div className="space-y-6">
               <div className="h-24 flex items-end justify-center border-b-2 border-slate-200">
@@ -427,7 +439,7 @@ function PayrollDetails() {
             </div>
           </div>
 
-          {}
+          { }
           <div className="pt-20 space-y-8 border-t-2 border-slate-100 mt-20 opacity-30">
             <div className="flex justify-between items-start text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
               <div className="space-y-1">

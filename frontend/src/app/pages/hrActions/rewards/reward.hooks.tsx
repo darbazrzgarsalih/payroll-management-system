@@ -21,6 +21,7 @@ export function useRewards() {
     const [rewards, setRewards] = useState<Reward[]>([])
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<null | string>(null)
+    const [actionLoading, setActionLoading] = useState<string | null>(null)
     const [search, setSearch] = useState<string>("")
     const [status, setStatus] = useState<string>("all")
 
@@ -43,6 +44,22 @@ export function useRewards() {
             setError(error?.response?.data?.message || "Failed to fetch Rewards")
         } finally {
             setLoading(false)
+        }
+    }
+
+    const voidReward = async (id: string) => {
+        setActionLoading(id)
+        setError(null)
+        try {
+            await api.patch(`/rewards/void/${id}`)
+            toast.success("Reward has been voided")
+            fetchRewards()
+            return true
+        } catch (err: any) {
+            setError(err?.response?.data?.message || "Cannot void reward")
+            return false
+        } finally {
+            setActionLoading(null)
         }
     }
 
@@ -71,7 +88,9 @@ export function useRewards() {
         search,
         setSearch,
         status,
-        setStatus
+        setStatus,
+        voidReward,
+        actionLoading
     }
 }
 

@@ -13,7 +13,7 @@ const RewardSchema = new mongoose.Schema({
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     voidedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    voidedAt: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    voidedAt: Date,
 }, { timestamps: true })
 
 const Reward = mongoose.model('Reward', RewardSchema)

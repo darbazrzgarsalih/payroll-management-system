@@ -178,7 +178,7 @@ export function useApplyLeave() {
             })
             setOpen(false)
             resetForm()
-            alert('Leave applied successfully!')
+            toast.success('Leave applied successfully!')
         } catch (error: any) {
             const errorMessage = error?.response?.data?.message || "Failed to apply leave"
             setError(errorMessage)

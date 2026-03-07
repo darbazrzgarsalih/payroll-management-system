@@ -24,7 +24,9 @@ function Rewards() {
     search,
     setSearch,
     status,
-    setStatus
+    setStatus,
+    voidReward,
+    actionLoading
   } = useRewards()
   const edit = useEditRewards({ refetch })
 
@@ -108,6 +110,8 @@ function Rewards() {
       <DataTable
         columns={RewardColumns({
           onEdit: edit.openEdit,
+          onVoid: voidReward,
+          actionLoading: actionLoading
         })}
         data={tableData}
         emptyMessage={loading ? "Loading..." : "Once there are rewards to show you can view them here"}
