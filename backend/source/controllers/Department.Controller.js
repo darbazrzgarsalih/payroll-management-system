@@ -18,14 +18,13 @@ export const getAllDepartments = async (req, res, next) => {
             ]
         }
 
-        if(status) {
+        if (status) {
             queryObject["status"] = status
         }
         const departments = await Department.find(queryObject)
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip(skip)
-            .populate('managerID', 'personalInfo.firstName personalInfo.lastName employeeCode')
             .populate('updatedBy', 'username')
             .populate('createdBy', 'username')
 
@@ -42,7 +41,7 @@ export const getAllDepartments = async (req, res, next) => {
         })
 
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch departments, please try again."))
     }
 }
@@ -71,7 +70,7 @@ export const getSingleDepartment = async (req, res, next) => {
         })
 
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch department, please try again."))
     }
 }
@@ -104,14 +103,14 @@ export const getDepartmentById = async (req, res, next) => {
         })
 
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch department, please try again."))
     }
 }
 
 export const createDepartment = async (req, res, next) => {
     try {
-        const { name,  budget } = req.body
+        const { name, budget } = req.body
 
         if (!name) {
             return next(new BadRequestError("Name is required"))
@@ -138,7 +137,7 @@ export const createDepartment = async (req, res, next) => {
 
         await department.save()
 
-        await department.populate('managerID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+
 
         return res.status(201).json({
             success: true,
@@ -146,7 +145,7 @@ export const createDepartment = async (req, res, next) => {
             department
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not create department, please try again"))
     }
 }
@@ -163,7 +162,7 @@ export const updateDepartment = async (req, res, next) => {
             return next(new BadRequestError("Invalid department ID"))
         }
 
-        const allowedUpdates = ['name', 'code', 'managerID', 'budget', 'status']
+        const allowedUpdates = ['name', 'budget', 'status']
 
         const buildUpdateObject = (updates, allowedFields) => {
             const updateObj = {}
@@ -183,9 +182,7 @@ export const updateDepartment = async (req, res, next) => {
             return next(new BadRequestError("No valid update data provided"))
         }
 
-        if (updateData.managerID && !mongoose.Types.ObjectId.isValid(updateData.managerID)) {
-            return next(new BadRequestError("Invalid manager ID"))
-        }
+
 
         if (updateData.status && !['active', 'inactive'].includes(updateData.status)) {
             return next(new BadRequestError("Invalid status. Must be 'active' or 'inactive'"))
@@ -215,7 +212,7 @@ export const updateDepartment = async (req, res, next) => {
                 }
             },
             { runValidators: true, new: true }
-        ).populate('managerID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+        ).populate('updatedBy', 'username')
 
         if (!department) {
             return next(new NotFoundError("Department not found"))
@@ -228,7 +225,7 @@ export const updateDepartment = async (req, res, next) => {
         })
 
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not update department, please try again"))
     }
 }
@@ -256,7 +253,7 @@ export const deleteDepartment = async (req, res, next) => {
             message: `Department "${department.name}" has been deleted`
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not delete department, please try again"))
     }
 }

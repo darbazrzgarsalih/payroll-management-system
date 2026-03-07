@@ -21,7 +21,6 @@ const app = express()
 
 const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim().replace(/\/$/, "") : 'http://localhost:5174';
 
-// 1. CORS MUST BE FIRST
 app.use(cors({
     credentials: true,
     origin: [clientUrl, 'http://localhost:5173', 'http://localhost:5174', 'https://htpayroll.vercel.app'],

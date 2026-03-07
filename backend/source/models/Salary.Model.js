@@ -18,7 +18,7 @@ const SalarySchema = new mongoose.Schema({
     },
     currency: {
         type: String,
-        enum: ['IQD', 'USD'],
+        enum: ['USD'],
         default: 'USD'
     },
     effectiveDate: {

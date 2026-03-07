@@ -30,9 +30,9 @@ export const createSalary = async (req, res, next) => {
             return next(new BadRequestError(`Invalid salary type. Must be one of: ${validSalaryTypes.join(', ')}`));
         }
 
-        const validCurrencies = ['IQD', 'USD'];
+        const validCurrencies = ['USD'];
         if (!validCurrencies.includes(currency)) {
-            return next(new BadRequestError(`Invalid currency. Must be one of: ${validCurrencies.join(', ')}`));
+            return next(new BadRequestError(`Invalid currency. Must be USD`));
         }
 
         if (isNaN(Date.parse(effectiveDate))) {
@@ -59,7 +59,7 @@ export const createSalary = async (req, res, next) => {
             updatedBy: req.user._id
         });
 
-        
+
 
         await salary.save();
 
@@ -210,9 +210,9 @@ export const updateSalary = async (req, res, next) => {
         }
 
         if (filteredUpdates.currency) {
-            const validCurrencies = ['IQD', 'USD'];
+            const validCurrencies = ['USD'];
             if (!validCurrencies.includes(filteredUpdates.currency)) {
-                return next(new BadRequestError(`Invalid currency. Must be one of: ${validCurrencies.join(', ')}`));
+                return next(new BadRequestError(`Invalid currency. Must be USD`));
             }
         }
 

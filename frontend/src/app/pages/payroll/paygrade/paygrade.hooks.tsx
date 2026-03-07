@@ -111,7 +111,7 @@ export function useCreatePaygrades() {
         level: 0,
         minSalary: 0,
         maxSalary: 0,
-        currency: ""
+        currency: "USD"
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,12 +133,12 @@ export function useCreatePaygrades() {
                 level: form.level,
                 minSalary: form.minSalary,
                 maxSalary: form.maxSalary,
-                currency: form.currency
+                currency: "USD"
             })
 
             toast.success("Paygrade has been created successfully")
         } catch (error) {
-            
+
         } finally {
             setLoading(false)
         }
@@ -173,7 +173,7 @@ export function useEditPaygrades({ refetch }: { refetch: () => void }) {
         level: "",
         minSalary: 0,
         maxSalary: 0,
-        currency: ""
+        currency: "USD"
     })
 
     const openEdit = (paygrade: any) => {
@@ -229,7 +229,7 @@ export function useEditPaygrades({ refetch }: { refetch: () => void }) {
             'level': form.level,
             'minSalary': form.minSalary,
             'maxSalary': form.maxSalary,
-            'currency': form.currency
+            'currency': "USD"
         }
 
         try {

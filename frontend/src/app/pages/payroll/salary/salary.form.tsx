@@ -64,14 +64,7 @@ export const CreateSalary = () => {
                             onChange={handleChange}
                             submitted={submitted}
                         />
-                        <FormField
-                            label="Currency"
-                            name="currency"
-                            value={form.currency}
-                            placeholder="USD"
-                            onChange={handleChange}
-                            submitted={submitted}
-                        />
+
                         <FormField
                             label="Effective Date"
                             name="effectiveDate"

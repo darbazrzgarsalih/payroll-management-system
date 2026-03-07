@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const DepartmentSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
     // code: { type: String, required: true, unique: true, trim: true },
-    managerID: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee' },
+
     budget: { type: Number, min: 0 },
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

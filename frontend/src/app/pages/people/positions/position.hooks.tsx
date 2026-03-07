@@ -36,7 +36,7 @@ export function usePositions() {
         setLoading(true)
         setError(null)
 
-        
+
 
         try {
             const res = await api.get('/positions', {
@@ -158,7 +158,7 @@ export function useCreatePosition() {
         try {
             await api.post('/positions', {
                 title: form.title,
-                department: form.departmentID,
+                departmentID: form.departmentID,
                 level: form.level,
                 description: form.description || undefined
             })

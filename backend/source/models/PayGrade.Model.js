@@ -6,7 +6,7 @@ const PayGradeSchema = new mongoose.Schema({
     level: Number,
     minSalary: { type: Number, required: true },
     maxSalary: { type: Number, required: true },
-    currency: { type: String, enum: ['IQD', 'USD'], default: 'USD' },
+    currency: { type: String, enum: ['USD'], default: 'USD' },
     description: String,
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

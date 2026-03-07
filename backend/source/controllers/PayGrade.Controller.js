@@ -7,8 +7,8 @@ export const createPayGrade = async (req, res, next) => {
     try {
         const { name, level, minSalary, maxSalary, currency } = req.body;
 
-        if (!name  || !level || !minSalary || !maxSalary || !currency) {
-            return next(new BadRequestError("Name, level, min salary, max salary and currency required"))
+        if (!name || !level || !minSalary || !maxSalary || currency !== 'USD') {
+            return next(new BadRequestError("Name, level, min salary, max salary are required and currency must be USD"))
         }
 
         if (Number(minSalary) >= Number(maxSalary)) {
@@ -38,7 +38,7 @@ export const createPayGrade = async (req, res, next) => {
             paygrade
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not create paygrade, please try again."))
     }
 }

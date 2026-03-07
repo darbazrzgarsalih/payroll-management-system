@@ -114,7 +114,7 @@ export function useCreateSalaries() {
         employeeID: "",
         salaryType: "",
         amount: 0,
-        currency: "",
+        currency: "USD",
         effectiveDate: "",
         payGradeID: ""
     })
@@ -138,14 +138,14 @@ export function useCreateSalaries() {
                 employeeID: form.employeeID,
                 salaryType: form.salaryType,
                 amount: form.amount,
-                currency: form.currency,
+                currency: "USD",
                 effectiveDate: form.effectiveDate,
                 payGradeID: form.payGradeID
             })
 
             toast.success("Salary has been created successfully")
         } catch (error: any) {
-            
+
         } finally {
             setLoading(false)
         }

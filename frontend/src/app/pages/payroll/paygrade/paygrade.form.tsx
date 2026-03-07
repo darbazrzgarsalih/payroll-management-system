@@ -61,15 +61,7 @@ export const CreatePaygrade = () => {
                             required
                             submitted={submitted}
                         />
-                        <FormField
-                            label="currency"
-                            name="currency"
-                            value={form.currency}
-                            placeholder="employee"
-                            onChange={handleChange}
-                            required
-                            submitted={submitted}
-                        />
+
 
 
                         <DialogFooter className="col-span-2">
@@ -114,7 +106,7 @@ export function EditPaygrade({
                 >
                     {error && <p>{error}</p>}
 
-                    
+
                     <FormField
                         name="name"
                         placeholder="name"
@@ -150,7 +142,7 @@ export function EditPaygrade({
                         value={form.currency}
                         onChange={onChange}
                     />
-                  
+
 
                     <DialogFooter className="col-span-2">
                         <Button type="button" variant={'outline'} onClick={onClose} disabled={loading}>

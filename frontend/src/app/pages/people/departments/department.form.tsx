@@ -119,13 +119,7 @@ export function EditDepartment({
                         value={form.name}
                         onChange={onChange}
                     />
-                    <FormField
-                        name="managerID"
-                        placeholder="manager id"
-                        label="Manager ID"
-                        value={form.managerID}
-                        onChange={onChange}
-                    />
+
                     <FormField
                         name="budget"
                         placeholder="budget"

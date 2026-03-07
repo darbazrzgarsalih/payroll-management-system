@@ -8,13 +8,11 @@ export type Department = {
     name: string
     budget: string | number
     status: string
-    managerID?: string
 }
 
 export type DepartmentForm = {
     name: string
     budget: string
-    managerID: string
 }
 
 export function useDepartments() {
@@ -90,8 +88,7 @@ export function useCreateDepartment() {
 
     const [form, setForm] = useState<DepartmentForm>({
         name: "",
-        budget: "",
-        managerID: ""
+        budget: ""
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,15 +99,14 @@ export function useCreateDepartment() {
     }
 
     const validateForm = (): boolean => {
-        const requiredFields = ['name', 'budget', 'managerID'] as const
+        const requiredFields = ['name', 'budget'] as const
         return requiredFields.every(field => form[field] !== '')
     }
 
     const resetForm = () => {
         setForm({
             name: "",
-            budget: "",
-            managerID: ""
+            budget: ""
         })
         setSubmitted(false)
         setError(null)
@@ -162,7 +158,6 @@ export function useCreateDepartment() {
 
 export type DepartmentEditForm = {
     name: string
-    managerID: string
     budget: string
 }
 
@@ -175,7 +170,6 @@ export function useEditDepartment({ refetch }: { refetch: () => void }) {
 
     const [form, setForm] = useState<DepartmentEditForm>({
         name: "",
-        managerID: "",
         budget: ""
     })
 
@@ -183,7 +177,6 @@ export function useEditDepartment({ refetch }: { refetch: () => void }) {
         setDepartmentId(department.id)
         const initialData = {
             name: department.name ?? "",
-            managerID: department.managerID ?? "",
             budget: department.budget ?? ""
         }
         setForm(initialData)
@@ -214,7 +207,6 @@ export function useEditDepartment({ refetch }: { refetch: () => void }) {
 
         const payload = {
             'name': form.name,
-            'managerID': form.managerID,
             'budget': form.budget
         }
 
