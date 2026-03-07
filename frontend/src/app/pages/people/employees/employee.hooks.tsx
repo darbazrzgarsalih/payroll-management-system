@@ -33,20 +33,24 @@ export type Employee = {
 }
 
 export type EmployeeForm = {
-    firstName?: string
+    firstName: string
     middleName?: string
-    lastName?: string
-    dateOfBirth?: string
-    phone?: string
-    email?: string
-    gender?: string
-    hireDate?: string
-    employeeCode?: string,
-    shiftId: string,
-    createAccount: boolean,
-    username: string,
-    password: string,
-    role: string,
+    lastName: string
+    dateOfBirth: string
+    phone: string
+    email: string
+    gender: string
+    hireDate: string
+    employeeCode?: string
+    shiftId: string
+    createAccount: boolean
+    username?: string
+    password?: string
+    role?: string
+    departmentID: string
+    positionID: string
+    city: string
+    country: string
 }
 
 export function useEmployees() {
@@ -196,6 +200,10 @@ export const useCreateEmployee = () => {
         username: "",
         password: "",
         role: "",
+        departmentID: "",
+        positionID: "",
+        city: "",
+        country: "",
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -221,7 +229,7 @@ export const useCreateEmployee = () => {
 
     const validateForm = (): boolean => {
         const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'gender'] as const
-        return requiredFields.every(field => (form[field] || "").trim() !== '')
+        return requiredFields.every(field => (form[field as keyof EmployeeForm] || "").toString().trim() !== '')
     }
 
     const resetForm = () => {
@@ -240,6 +248,10 @@ export const useCreateEmployee = () => {
             username: "",
             password: "",
             role: "",
+            departmentID: "",
+            positionID: "",
+            city: "",
+            country: "",
         })
         setAvatarFile(null)
         setSubmitted(false)
@@ -270,6 +282,10 @@ export const useCreateEmployee = () => {
             if (form.email) formData.append('email', form.email)
             if (form.hireDate) formData.append('hireDate', form.hireDate)
             if (form.shiftId) formData.append('shiftId', form.shiftId)
+            if (form.departmentID) formData.append('employmentInfo.departmentID', form.departmentID)
+            if (form.positionID) formData.append('employmentInfo.positionID', form.positionID)
+            if (form.city) formData.append('personalInfo.address.city', form.city)
+            if (form.country) formData.append('personalInfo.address.country', form.country)
 
             // Note: form.createAccount is boolean, need to convert to string representation
             formData.append('createAccount', form.createAccount ? 'true' : 'false')
@@ -331,6 +347,7 @@ type EmployeeEditForm = {
     positionID: string
     status: string
     phone: string
+    role: string
 }
 
 export function useEditEmployee({ refetch }: { refetch: () => void }) {
@@ -352,7 +369,8 @@ export function useEditEmployee({ refetch }: { refetch: () => void }) {
         departmentID: "",
         positionID: "",
         status: "",
-        phone: ""
+        phone: "",
+        role: ""
     })
 
     const openEdit = (employee: any) => {
@@ -369,7 +387,8 @@ export function useEditEmployee({ refetch }: { refetch: () => void }) {
             departmentID: employee.departmentID ?? "",
             positionID: employee.positionID ?? "",
             status: employee.status ?? "active",
-            phone: employee.phone ?? ""
+            phone: employee.phone ?? "",
+            role: employee.role ?? "employee"
         }
         setForm(initialData)
         setInitialForm(initialData)
@@ -419,6 +438,7 @@ export function useEditEmployee({ refetch }: { refetch: () => void }) {
         if (form.status) formData.append('employmentInfo.status', form.status)
         if (form.departmentID) formData.append('employmentInfo.departmentID', form.departmentID)
         if (form.positionID) formData.append('employmentInfo.positionID', form.positionID)
+        if (form.role) formData.append('role', form.role)
         if (avatarFile) formData.append('avatar', avatarFile)
 
         try {

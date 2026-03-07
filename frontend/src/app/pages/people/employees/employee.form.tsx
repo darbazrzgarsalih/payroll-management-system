@@ -38,6 +38,8 @@ export const CreateEmployee = () => {
     } = useCreateEmployee()
 
     const [shifts, setShifts] = useState<{ _id: string; name: string }[]>([])
+    const [departments, setDepartments] = useState<{ value: string; label: string }[]>([])
+    const [positions, setPositions] = useState<{ value: string; label: string }[]>([])
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
 
     const onAvatarSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +50,14 @@ export const CreateEmployee = () => {
     }
     useEffect(() => {
         api.get('/shifts').then(r => setShifts(r.data?.shifts || [])).catch(() => { })
+        api.get('/departments').then(r => {
+            const depts = r.data?.departments || []
+            setDepartments(depts.map((d: any) => ({ value: d._id || d.id, label: d.name })))
+        }).catch(() => { })
+        api.get('/positions').then(r => {
+            const pos = r.data?.positions || []
+            setPositions(pos.map((p: any) => ({ value: p._id || p.id, label: p.title || p.name })))
+        }).catch(() => { })
     }, [])
 
     return (
@@ -172,6 +182,42 @@ export const CreateEmployee = () => {
                         submitted={submitted}
                     />
 
+                    <SelectField
+                        label="Department"
+                        name="departmentID"
+                        value={form.departmentID}
+                        options={departments}
+                        onChange={handleSelectChange}
+                        submitted={submitted}
+                    />
+
+                    <SelectField
+                        label="Position"
+                        name="positionID"
+                        value={form.positionID}
+                        options={positions}
+                        onChange={handleSelectChange}
+                        submitted={submitted}
+                    />
+
+                    <FormField
+                        label="City"
+                        name="city"
+                        value={form.city}
+                        onChange={handleChange}
+                        placeholder="New York"
+                        submitted={submitted}
+                    />
+
+                    <FormField
+                        label="Country"
+                        name="country"
+                        value={form.country}
+                        onChange={handleChange}
+                        placeholder="USA"
+                        submitted={submitted}
+                    />
+
                     <div className="w-full flex flex-col gap-2">
                         <Label>Date of Birth</Label>
                         <Popover>
@@ -251,7 +297,7 @@ export const CreateEmployee = () => {
                                     <FormField
                                         label="Username"
                                         name="username"
-                                        value={form.username}
+                                        value={form.username ?? ""}
                                         onChange={handleChange}
                                         required
                                         submitted={submitted}
@@ -261,7 +307,7 @@ export const CreateEmployee = () => {
                                         label="Password"
                                         name="password"
                                         type="password"
-                                        value={form.password}
+                                        value={form.password ?? ""}
                                         onChange={handleChange}
                                         required
                                         submitted={submitted}
@@ -270,7 +316,7 @@ export const CreateEmployee = () => {
                                     <SelectField
                                         label="Role"
                                         name="role"
-                                        value={form.role}
+                                        value={form.role ?? ""}
                                         options={[
                                             { value: "super_admin", label: "Super Admin" },
                                             { value: "admin", label: "Admin" },
