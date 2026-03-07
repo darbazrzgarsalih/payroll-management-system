@@ -76,7 +76,7 @@ export async function generatePayslipPDF(payslip) {
         const middleName = emp?.personalInfo?.middleName ?? '';
         const lastName = emp?.personalInfo?.lastName ?? emp?.lastName ?? '';
         const empName = [firstName, middleName, lastName].filter(Boolean).join(' ') || 'N/A';
-        const enr = emp?.enr ?? 'N/A';
+        const enr = emp?.employeeCode || emp?.enr || 'N/A';
 
         const payroll = payslip.payrollID;
         const payrollName = payroll?.name ?? payroll?.payrollCode ?? 'N/A';

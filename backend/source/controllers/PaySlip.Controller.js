@@ -17,7 +17,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PAYSLIPS_DIR = path.join(__dirname, '..', '..', '..', 'payslips');
 
 const populatePayslip = (q) =>
-    q.populate('employeeID', 'firstName lastName enr personalInfo')
+    q.populate('employeeID', 'personalInfo firstName middleName lastName employeeCode')
         .populate('payrollID', 'name payrollCode payPeriod')
         .populate('payrollItemID')
         .populate('createdBy', 'username')
@@ -141,7 +141,7 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
             status: { $in: ['approved', 'paid'] }
         })
             .populate('payrollID', 'name payrollCode payPeriod')
-            .populate('employeeID', 'personalInfo firstName lastName enr')
+            .populate('employeeID', 'personalInfo firstName middleName lastName employeeCode')
             .populate('rewards')
             .populate('overtimes')
             .populate('deductions.deductionID')
@@ -184,11 +184,11 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
                             })),
                         rewards: (item.rewards ?? []).map(r => ({
                             description: r.reason || r.type || 'Reward',
-                            amount: r.amount || 0
+                            amount: Number(r.amount || 0)
                         })),
                         overtimes: (item.overtimes ?? []).map(o => ({
                             description: `Overtime (${o.hours || 0}h)`,
-                            amount: o.amount || 0
+                            amount: Number(o.amount || 0)
                         })),
                         deductions: [
                             ...(item.componentBreakdown ?? [])

@@ -36,7 +36,7 @@ export const CreatePosition = () => {
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="!max-w-3xl md:max-w-4xl w-full">
+            <DialogContent className="max-w-3xl! md:max-w-4xl w-full">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-semibold text-foreground/90">
                         Create New Position
@@ -132,7 +132,7 @@ export function EditPosition({
 }: any) {
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="!max-w-3xl w-full">
+            <DialogContent className="max-w-3xl! w-full">
                 <DialogHeader>
                     <DialogTitle>Edit position</DialogTitle>
                     <DialogDescription>edit position informations below.</DialogDescription>

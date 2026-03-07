@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 
 export type Payslip = {
     id: string;
-    enr: number;
+    enr: string | number;
     employeeName: string;
     payrollName: string;
     startDate: string;
@@ -36,8 +36,7 @@ export type Payslip = {
 
 function mapPayslip(p: any): Payslip {
 
-    const rawEnr = p.employeeID?.enr;
-    const enrValue = (typeof rawEnr === "number" || typeof rawEnr === "string") ? rawEnr : 0;
+    const enrValue = p.employeeID?.employeeCode || p.employeeID?.enr || p.enr || 0;
 
     // Employee name: try personalInfo first, then top-level fields
     const firstName = p.employeeID?.personalInfo?.firstName ?? p.employeeID?.firstName ?? "";

@@ -368,7 +368,7 @@ export function EditEmployee({
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="!max-w-9xl min-h-[50%] md:max-w-7xl w-full ">
+            <DialogContent className="max-w-9xl! min-h-[50%] md:max-w-7xl w-full ">
                 <div>
                     <DialogHeader>
                         <DialogTitle>Edit employee</DialogTitle>
