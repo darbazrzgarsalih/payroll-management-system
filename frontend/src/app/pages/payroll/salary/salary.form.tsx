@@ -6,19 +6,14 @@ import { Plus } from "lucide-react"
 import { useCreateSalaries } from "./salary.hooks"
 import { SelectField } from "@/app/components/SelectField"
 import { useEmployees } from "../../people/employees/employee.hooks"
-import { useEffect, useState } from "react"
-import api from "@/app/services/api"
+import { usePaygrades } from "../paygrade/paygrade.hooks"
 
 const SALARY_TYPES = ["monthly", "hourly", "daily", "weekly", "annual"]
 
 export const CreateSalary = () => {
     const { loading, error, submitted, form, handleChange, createSalary } = useCreateSalaries()
     const { employees } = useEmployees()
-    const [payGrades, setPayGrades] = useState<{ id: string; name: string }[]>([])
-
-    useEffect(() => {
-        api.get('/paygrade').then(r => setPayGrades(r.data?.payGrades || [])).catch(() => { })
-    }, [])
+    const { paygrades } = usePaygrades()
 
     const handleSelectChange = (name: string, value: string) => {
         handleChange({ target: { name, value } } as any)
@@ -78,7 +73,7 @@ export const CreateSalary = () => {
                             label="Pay Grade"
                             name="payGradeID"
                             value={form.payGradeID}
-                            options={payGrades.map(pg => ({ value: pg.id, label: pg.name }))}
+                            options={paygrades.map(pg => ({ value: pg.id || (pg as any)._id, label: pg.name }))}
                             onChange={handleSelectChange}
                             submitted={submitted}
                         />
