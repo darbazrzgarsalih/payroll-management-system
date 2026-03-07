@@ -12,6 +12,7 @@ export type EmployeeRow = {
     position: string
     gender: string
     address: string
+    shift: string
     status: string
     avatar?: string
 }
@@ -53,6 +54,7 @@ export const employeeColumns = ({
         { header: "EMAIL", accessor: "email" },
         { header: "DEPARTMENT", accessor: "department" },
         { header: "POSITION", accessor: "position" },
+        { header: "SHIFT", accessor: "shift" },
         { header: "GENDER", accessor: "gender" },
         { header: "ADDRESS", accessor: "address" },
         { header: "STATUS", accessor: "status" },

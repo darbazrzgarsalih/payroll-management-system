@@ -30,6 +30,7 @@ export type Employee = {
     departmentID?: string
     positionID?: string
     managerID?: string
+    shift?: string
 }
 
 export type EmployeeForm = {
@@ -282,10 +283,10 @@ export const useCreateEmployee = () => {
             if (form.email) formData.append('email', form.email)
             if (form.hireDate) formData.append('hireDate', form.hireDate)
             if (form.shiftId) formData.append('shiftId', form.shiftId)
-            if (form.departmentID) formData.append('employmentInfo.departmentID', form.departmentID)
-            if (form.positionID) formData.append('employmentInfo.positionID', form.positionID)
-            if (form.city) formData.append('personalInfo.address.city', form.city)
-            if (form.country) formData.append('personalInfo.address.country', form.country)
+            if (form.departmentID) formData.append('departmentID', form.departmentID)
+            if (form.positionID) formData.append('positionID', form.positionID)
+            if (form.city) formData.append('city', form.city)
+            if (form.country) formData.append('country', form.country)
 
             // Note: form.createAccount is boolean, need to convert to string representation
             formData.append('createAccount', form.createAccount ? 'true' : 'false')

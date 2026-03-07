@@ -108,6 +108,7 @@ function Employee() {
     email: TextItem(emp.email ?? "No email"),
     department: TextItem(emp.department ?? "No department"),
     position: TextItem(emp.position ?? "No position"),
+    shift: TextItem(emp.shift ?? "No shift"),
     gender: TextItem(emp.gender ?? "Not provided"),
     address: TextItem((emp.address?.country || "") + "," + (emp.address?.city || "")),
     status: TextItem(emp.status ?? "No status"),

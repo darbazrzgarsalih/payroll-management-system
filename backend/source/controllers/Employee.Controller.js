@@ -41,6 +41,7 @@ export const getAllEmployees = async (req, res, next) => {
             .populate('employmentInfo.positionID', 'title')
             .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.lastName')
             .populate('userID', 'username')
+            .populate('shiftId', 'name')
 
         const transformedEmployee = employees.map((e) => {
             return {
@@ -66,10 +67,11 @@ export const getAllEmployees = async (req, res, next) => {
                 employmentType: e.employmentInfo?.employmentType,
                 position: e.employmentInfo?.positionID?.title ?? null,
                 department: e.employmentInfo?.departmentID?.name ?? null,
+                shift: e.shiftId?.name ?? "No shift",
                 status: e.employmentInfo?.status,
             }
         })
-        
+
 
         const total = await Employee.countDocuments(queryObject)
 
@@ -84,7 +86,7 @@ export const getAllEmployees = async (req, res, next) => {
         })
 
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch employees, please try again."))
     }
 }
@@ -119,7 +121,7 @@ export const getSingleEmployee = async (req, res, next) => {
             employee
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch employee, please try again."))
     }
 }
@@ -148,7 +150,7 @@ export const getEmployeeByCode = async (req, res, next) => {
             employee
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch employee, please try again."))
     }
 }
@@ -179,11 +181,12 @@ export const createEmployee = async (req, res, next) => {
             positionID,
             managerID,
 
-            
+
             createAccount,
             username,
             password,
-            role
+            role,
+            shiftId
         } = req.body
 
         if (!employeeCode || !firstName || !lastName || !dateOfBirth || !email || !hireDate) {
@@ -228,6 +231,7 @@ export const createEmployee = async (req, res, next) => {
                 positionID,
                 managerID
             },
+            shiftId,
             createdBy: req.user._id,
             updatedBy: req.user._id
         }], { session })
@@ -263,7 +267,7 @@ export const createEmployee = async (req, res, next) => {
                 updatedBy: req.user._id
             }], { session })
 
-            
+
             employee[0].userID = createdUser[0]._id
             await employee[0].save({ session })
         }
@@ -384,7 +388,7 @@ export const updateEmployee = async (req, res, next) => {
         })
 
     } catch (error) {
-        
+
         next(new InternalServerError("Could not update employee, please try again"))
     }
 }
@@ -431,7 +435,7 @@ export const terminateEmployee = async (req, res, next) => {
         });
 
     } catch (error) {
-        
+
         return next(
             new InternalServerError("Could not terminate employee, please try again.")
         );
@@ -461,7 +465,7 @@ export const deleteEmployee = async (req, res, next) => {
             message: `${employee.personalInfo.firstName} ${employee.personalInfo.lastName} has been deleted.`
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not delete employee, please try again."))
     }
 }
@@ -579,7 +583,7 @@ export const importEmployeesCSV = async (req, res, next) => {
             } catch (err) {
                 await session.abortTransaction();
                 session.endSession();
-                
+
                 return next(new InternalServerError("Error processing CSV data: " + err.message));
             }
         });
