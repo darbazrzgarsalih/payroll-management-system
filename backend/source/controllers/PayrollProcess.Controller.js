@@ -197,10 +197,8 @@ export const generatePayrollItems = async (req, res, next) => {
             }, 0) + componentDeductionsSum;
 
 
-            const grossPay = (salary.amount || 0) + earningsSum + rewardsSum + overtimeSum;
-
-
-            const netPay = grossPay - deductionsSum - punishmentsSum;
+            const grossPay = Number(salary.amount || 0) + Number(earningsSum || 0) + Number(rewardsSum || 0) + Number(overtimeSum || 0);
+            const netPay = grossPay - Number(deductionsSum || 0) - Number(punishmentsSum || 0);
 
             const payrollItem = new PayrollItem({
                 payrollID: payroll._id,

@@ -183,11 +183,11 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
                                 amount: c.amount || 0
                             })),
                         rewards: (item.rewards ?? []).map(r => ({
-                            description: r.reason || r.type || 'Reward',
+                            description: r.reason || r.type || r.name || 'Reward',
                             amount: Number(r.amount || 0)
                         })),
                         overtimes: (item.overtimes ?? []).map(o => ({
-                            description: `Overtime (${o.hours || 0}h)`,
+                            description: o.remarks || `Overtime (${o.hours || 0}h)`,
                             amount: Number(o.amount || 0)
                         })),
                         deductions: [
@@ -224,7 +224,7 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
                                 amount: amt
                             };
                         }),
-                        grossPay: item.grossPay,
+                        grossPay: item.grossPay || (item.baseSalary + (item.totalRewards || 0) + (item.totalOvertimes || 0)),
                         netPay: item.netPay,
                         payDate: item.paymentDate || new Date(),
                         status: 'draft',

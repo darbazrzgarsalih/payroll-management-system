@@ -148,7 +148,7 @@ export async function generatePayslipPDF(payslip) {
             doc.font(bold ? 'Helvetica-Bold' : 'Helvetica')
                 .fillColor(bold ? C.textDark : C.textMid)
                 .fontSize(9.5);
-            doc.text('  ' + label, MARGIN, y + 1, { width: INNER * 0.65 });
+            doc.text('  ' + (label || 'Item'), MARGIN, y + 1, { width: INNER * 0.65 });
             doc.text(fmt(amount), MARGIN, y + 1, { width: INNER - 8, align: 'right' });
             y += 18;
         };
@@ -169,11 +169,11 @@ export async function generatePayslipPDF(payslip) {
 
         if (payslip.rewards?.length) {
             drawSubLabel('Rewards');
-            payslip.rewards.forEach(r => drawRow(r.description, r.amount));
+            payslip.rewards.forEach(r => drawRow(r.description || 'Reward', r.amount));
         }
         if (payslip.overtimes?.length) {
             drawSubLabel('Overtime');
-            payslip.overtimes.forEach(o => drawRow(o.description, o.amount));
+            payslip.overtimes.forEach(o => drawRow(o.description || 'Overtime', o.amount));
         }
 
 
@@ -189,11 +189,11 @@ export async function generatePayslipPDF(payslip) {
         rowAlt = false;
 
         if (payslip.deductions?.length) {
-            payslip.deductions.forEach(d => drawRow(d.description, d.amount));
+            payslip.deductions.forEach(d => drawRow(d.description || 'Deduction', d.amount));
         }
         if (payslip.punishments?.length) {
             drawSubLabel('Penalties');
-            payslip.punishments.forEach(p => drawRow(p.description, p.amount));
+            payslip.punishments.forEach(p => drawRow(p.description || 'Penalty', p.amount));
         }
         if (!payslip.deductions?.length && !payslip.punishments?.length) {
             doc.fillColor(C.textLight).fontSize(9).font('Helvetica')
