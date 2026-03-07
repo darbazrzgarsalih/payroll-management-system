@@ -6,7 +6,7 @@ import { createLeaveType, deactivateLeaveType, getAllLeaveTypes, getSingleLeaveT
 
 const router = express.Router()
 
-router.get('/', authMiddleware, authorize(PERMISSIONS.LEAVE_VIEW), getAllLeaveTypes)
+router.get('/', authMiddleware, authorize(PERMISSIONS.LEAVETYPE_VIEW), getAllLeaveTypes)
 router.get('/:id', authMiddleware, authorize(PERMISSIONS.LEAVE_VIEW), getSingleLeaveType)
 router.post('/', authMiddleware, authorize(PERMISSIONS.LEAVE_CREATE), createLeaveType)
 router.patch('/deactivate/:id', authMiddleware, authorize(PERMISSIONS.LEAVE_REJECT), deactivateLeaveType)
