@@ -37,6 +37,7 @@ type MyPayslip = {
     grossPay: number;
     netPay: number;
     status: "draft" | "approved" | "paid";
+    earnings: { description: string; amount: number }[];
     deductions: { description: string; amount: number }[];
     rewards: { description: string; amount: number }[];
     overtimes: { description: string; amount: number }[];
@@ -57,6 +58,7 @@ function mapPayslip(p: any): MyPayslip {
         grossPay: p.grossPay ?? 0,
         netPay: p.netPay ?? 0,
         status: p.status ?? "draft",
+        earnings: p.earnings ?? [],
         deductions: p.deductions ?? [],
         rewards: p.rewards ?? [],
         overtimes: p.overtimes ?? [],
@@ -83,7 +85,8 @@ function PayslipDetail({ payslip, open, onClose }: { payslip: MyPayslip | null; 
             ? <>{items.map((item, i) => <Row key={i} label={`  ${item.description}`} value={fmt(item.amount)} />)}</>
             : <p className="text-sm text-muted-foreground py-0.5">None</p>;
 
-    const downloadUrl = `http://localhost:8000/api/v1/payslip/${payslip.id}/pdf`;
+    const BASE_URL = (import.meta as any).env.VITE_API_URL ?? "http://localhost:8000/api/v1";
+    const downloadUrl = `${BASE_URL}/payslip/${payslip.id}/pdf`;
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
@@ -109,6 +112,9 @@ function PayslipDetail({ payslip, open, onClose }: { payslip: MyPayslip | null; 
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Earnings</p>
                         <Row label="Base Salary" value={fmt(payslip.baseSalary)} />
+                        {payslip.earnings.length > 0 && (
+                            <ItemList items={payslip.earnings} />
+                        )}
                         {payslip.rewards.length > 0 && (
                             <><p className="text-xs text-muted-foreground mt-1 mb-0.5">Rewards</p><ItemList items={payslip.rewards} /></>
                         )}

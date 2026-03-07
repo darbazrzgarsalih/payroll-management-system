@@ -155,7 +155,7 @@ function PayslipDetailModal({
 
         <div className="space-y-4 mt-1">
 
-          {}
+          { }
           <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
             <div><span className="text-muted-foreground text-xs uppercase tracking-wide">Payroll</span><p className="font-medium">{payslip.payrollName}</p></div>
             <div><span className="text-muted-foreground text-xs uppercase tracking-wide">Pay Date</span><p className="font-medium">{payslip.payDate}</p></div>
@@ -164,10 +164,13 @@ function PayslipDetailModal({
 
           <Separator />
 
-          {}
+          { }
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Earnings</p>
             <Row label="Base Salary" value={fmt(payslip.baseSalary)} />
+            {payslip.earnings.length > 0 && (
+              <ItemList items={payslip.earnings} />
+            )}
             {payslip.rewards.length > 0 && (
               <><p className="text-xs font-medium text-muted-foreground mt-2 mb-0.5">Rewards</p><ItemList items={payslip.rewards} /></>
             )}
@@ -178,7 +181,7 @@ function PayslipDetailModal({
 
           <Separator />
 
-          {}
+          { }
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Deductions</p>
             <ItemList items={payslip.deductions} />
@@ -189,13 +192,13 @@ function PayslipDetailModal({
 
           <Separator />
 
-          {}
+          { }
           <div>
             <Row label="Gross Pay" value={fmt(payslip.grossPay)} bold />
             <Row label="Net Pay" value={fmt(payslip.netPay)} green />
           </div>
 
-          {}
+          { }
           {(payslip.ytdEarnings ?? 0) > 0 && (
             <>
               <Separator />
@@ -210,7 +213,7 @@ function PayslipDetailModal({
 
           <Separator />
 
-          {}
+          { }
           <div className="space-y-2">
             <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
               <Button className="w-full" variant="outline" size="sm">
@@ -218,7 +221,7 @@ function PayslipDetailModal({
               </Button>
             </a>
 
-            {}
+            { }
             <AuditHistory payslipId={payslip.id} fetchFn={fetchAuditLog} />
           </div>
         </div>
@@ -401,7 +404,7 @@ function Payslips() {
   const [generateOpen, setGenerateOpen] = useState(false);
   const [toast, setToast] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
-  
+
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkLoading, setBulkLoading] = useState(false);
 
@@ -491,7 +494,7 @@ function Payslips() {
 
   return (
     <div className="space-y-5">
-      {}
+      { }
       <div className="flex items-center justify-between flex-wrap gap-3">
         <PageHeader title="Payslips" description={`${total} total payslips`} />
         <div className="flex gap-2 flex-wrap items-center">
@@ -517,7 +520,7 @@ function Payslips() {
         </div>
       </div>
 
-      {}
+      { }
       {toast && (
         <div className={`rounded-lg border px-4 py-3 text-sm ${toast.type === "error"
           ? "bg-destructive/10 text-destructive border-destructive/20"
@@ -527,7 +530,7 @@ function Payslips() {
         </div>
       )}
 
-      {}
+      { }
       <div className="flex flex-wrap gap-2.5">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -563,14 +566,14 @@ function Payslips() {
         </Select>
       </div>
 
-      {}
+      { }
       {error && (
         <div className="rounded-lg bg-destructive/10 text-destructive border border-destructive/20 text-sm px-4 py-3">
           {error}
         </div>
       )}
 
-      {}
+      { }
       <DataTable
         columns={columns as any}
         data={payslips}
@@ -578,7 +581,7 @@ function Payslips() {
         emptyMessage={loading ? "Loading..." : "Once there are payslips to show, you can view them here"}
       />
 
-      {}
+      { }
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm text-muted-foreground pt-1">
           <span>Page {page} of {totalPages}</span>
@@ -589,7 +592,7 @@ function Payslips() {
         </div>
       )}
 
-      {}
+      { }
       <PayslipDetailModal
         payslip={selectedPayslip}
         open={!!selectedPayslip}

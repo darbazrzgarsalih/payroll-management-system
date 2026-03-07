@@ -91,12 +91,12 @@ async function updateDbJob(jobId, updates) {
 
 export const getEligiblePayrolls = async (req, res, next) => {
     try {
-        
+
         const payrolls = await Payroll.find({ status: { $in: ['paid', 'approved'] } })
             .sort({ createdAt: -1 })
             .select('payrollCode payPeriod status createdAt');
 
-        
+
         const payrollIdsWithPayslips = await PaySlip.distinct('payrollID');
         const eligiblePayrolls = payrolls.filter(
             (p) => !payrollIdsWithPayslips.some((id) => id && id.equals(p._id))
@@ -126,11 +126,11 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(payrollID))
             return next(new BadRequestError('Invalid Payroll ID'));
 
-        
+
         const payroll = await Payroll.findById(payrollID);
         if (!payroll) return next(new NotFoundError('Payroll not found'));
-        if (!['paid', 'approved'].includes(payroll.status))
-            return next(new BadRequestError('Payslips can only be generated for approved or paid payrolls'));
+        if (!['paid', 'approved', 'processed'].includes(payroll.status))
+            return next(new BadRequestError('Payslips can only be generated for approved, paid or processed payrolls'));
 
         const existing = await PaySlip.findOne({ payrollID });
         if (existing)
@@ -138,7 +138,11 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
 
         const payrollItems = await PayrollItem.find({ payrollID, status: 'paid' })
             .populate('payrollID', 'name payrollCode payPeriod')
-            .populate('employeeID', 'firstName lastName enr');
+            .populate('employeeID', 'firstName lastName enr personalInfo')
+            .populate('rewards')
+            .populate('overtimes')
+            .populate('deductions.deductionID')
+            .populate('punishments.punishmentID');
 
         if (payrollItems.length === 0)
             return next(new NotFoundError('No paid payroll items found for this payroll'));
@@ -146,7 +150,7 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
         const jobId = uuidv4();
         await createDbJob(jobId, payrollID, req.user._id);
 
-        
+
         res.status(202).json({
             success: true,
             message: 'Payslip generation started.',
@@ -154,7 +158,6 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
             total: payrollItems.length,
         });
 
-        
         (async () => {
             await updateDbJob(jobId, { status: 'running', total: payrollItems.length });
             let count = 0;
@@ -170,22 +173,52 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
                             ? { startDate: item.payrollID.payPeriod.startDate, endDate: item.payrollID.payPeriod.endDate }
                             : null,
                         baseSalary: item.baseSalary,
-                        rewards: item.rewards ?? [],
-                        overtimes: item.overtimes ?? [],
-                        deductions: item.deductions ?? [],
-                        punishments: item.punishments ?? [],
+                        earnings: (item.componentBreakdown ?? [])
+                            .filter(c => c.type === 'earning')
+                            .map(c => ({
+                                description: c.description || 'Earning',
+                                amount: c.amount || 0
+                            })),
+                        rewards: (item.rewards ?? []).map(r => ({
+                            description: r.type || r.reason || 'Reward',
+                            amount: r.amount || 0
+                        })),
+                        overtimes: (item.overtimes ?? []).map(o => ({
+                            description: `Overtime (${o.hours}h)`,
+                            amount: o.amount || 0
+                        })),
+                        deductions: [
+                            ...(item.componentBreakdown ?? [])
+                                .filter(c => c.type === 'deduction')
+                                .map(c => ({
+                                    description: c.description || 'Deduction',
+                                    amount: c.amount || 0
+                                })),
+                            ...(item.deductions ?? []).map(d => ({
+                                description: d.deductionID?.name || 'Deduction',
+                                amount: d.deductionID?.calculationType === 'percentage'
+                                    ? (item.baseSalary * (d.deductionID.percentage || 0)) / 100
+                                    : d.deductionID?.amount || 0
+                            }))
+                        ],
+                        punishments: (item.punishments ?? []).map(p => ({
+                            description: p.punishmentID?.name || p.punishmentID?.type || 'Punishment',
+                            amount: p.punishmentID?.calculationType === 'percentage'
+                                ? (item.baseSalary * (p.punishmentID.percentage || 0)) / 100
+                                : p.punishmentID?.amount || 0
+                        })),
                         grossPay: item.grossPay,
                         netPay: item.netPay,
-                        payDate: item.paymentDate,
+                        payDate: item.paymentDate || new Date(),
                         status: 'draft',
                         createdBy: req.user._id,
                     });
 
-                    
+
                     try {
                         const populated = await populatePayslip(PaySlip.findById(payslip._id));
                         const absPath = await generatePayslipPDF(populated);
-                        
+
                         const relPath = path.relative(
                             path.join(__dirname, '..', '..', '..'),
                             absPath
@@ -254,13 +287,13 @@ export const downloadPayslipPDF = async (req, res, next) => {
                 return next(new NotFoundError('Payslip not found'));
         }
 
-        
+
         let absPath = payslip.fileUrl
             ? path.resolve(path.join(__dirname, '..', '..', '..'), payslip.fileUrl)
             : null;
 
         if (!absPath || !fs.existsSync(absPath)) {
-            
+
             try {
                 const populated = await populatePayslip(PaySlip.findById(id));
                 absPath = await generatePayslipPDF(populated);
@@ -301,7 +334,7 @@ export const getAllPayslips = async (req, res, next) => {
                 startDate = new Date(y, 0, 1);
                 endDate = new Date(y + 1, 0, 1);
             }
-            
+
             queryObject.$or = [
                 { payDate: { $gte: startDate, $lt: endDate } },
                 { payDate: null, 'payPeriod.startDate': { $gte: startDate, $lt: endDate } },
@@ -416,7 +449,7 @@ export const getPayslipById = async (req, res, next) => {
                 return next(new NotFoundError('Payslip not found'));
         }
 
-        
+
         payslip = payslip.toObject();
         const ytd = await computeYTD(payslip.employeeID?._id ?? payslip.employeeID);
         payslip.ytdEarnings = ytd.ytdEarnings;
@@ -446,8 +479,8 @@ export const updatePayslipStatus = async (req, res, next) => {
         if (!payslip) return next(new NotFoundError('Payslip not found'));
 
         // Transition logic: 
-        
-        
+
+
         if (payslip.status === 'paid') {
             return next(new BadRequestError('Payslip is already paid and cannot be modified.'));
         }
@@ -472,7 +505,7 @@ export const updatePayslipStatus = async (req, res, next) => {
 
         await payslip.save();
 
-        
+
         if (status === 'approved') {
             try {
                 const emp = await Employee.findById(payslip.employeeID).select('personalInfo');
@@ -530,13 +563,13 @@ export const bulkUpdateStatus = async (req, res, next) => {
                 return next(new BadRequestError(`Invalid payslip ID: ${id}`));
         }
 
-        
+
         const payslips = await PaySlip.find({ _id: { $in: ids } }).select('_id status');
 
-        
+
         // Eligible if:
-        
-        
+
+
         const eligible = payslips.filter((p) => {
             if (p.status === 'draft') return true;
             if (p.status === 'approved' && status === 'paid') return true;
@@ -601,7 +634,7 @@ export const createAdjustmentPayslip = async (req, res, next) => {
             employeeID: original.employeeID?._id ?? original.employeeID,
             payPeriod: original.payPeriod,
             baseSalary: original.baseSalary,
-            
+
             grossPay: grossPay ?? original.grossPay,
             netPay: netPay ?? original.netPay,
             deductions: deductions ?? original.deductions,

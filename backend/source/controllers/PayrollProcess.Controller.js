@@ -118,12 +118,18 @@ export const generatePayrollItems = async (req, res, next) => {
                 status: 'active'
             });
 
-            const componentBreakdown = components.map(c => ({
-                componentID: c._id,
-                type: c.type,
-                description: c.description || '',
-                amount: c.value || 0
-            }));
+            const componentBreakdown = components.map(c => {
+                let amt = c.value || 0;
+                if (c.calculationType === 'percentage' && salary.amount) {
+                    amt = (salary.amount * c.value) / 100;
+                }
+                return {
+                    componentID: c._id,
+                    type: c.type,
+                    description: c.description || c.name || '',
+                    amount: amt
+                };
+            });
 
             const rewards = await Reward.find({
                 employeeID: employee._id,
@@ -164,7 +170,13 @@ export const generatePayrollItems = async (req, res, next) => {
             })
 
             const punishmentsSum = punishments.reduce(
-                (acc, p) => acc + (p.amount || 0),
+                (acc, p) => {
+                    let amt = p.amount || 0;
+                    if (p.calculationType === 'percentage' && p.percentage) {
+                        amt = (salary.amount * p.percentage) / 100;
+                    }
+                    return acc + amt;
+                },
                 0
             );
 
@@ -176,13 +188,19 @@ export const generatePayrollItems = async (req, res, next) => {
                 .filter(c => c.type === 'deduction')
                 .reduce((acc, c) => acc + (c.amount || 0), 0);
 
-            const deductionsSum = deductions.reduce((acc, d) => acc + (d.amount || 0), 0) + componentDeductionsSum;
+            const deductionsSum = deductions.reduce((acc, d) => {
+                let amt = d.amount || 0;
+                if (d.calculationType === 'percentage' && d.percentage) {
+                    amt = (salary.amount * d.percentage) / 100;
+                }
+                return acc + amt;
+            }, 0) + componentDeductionsSum;
 
 
-            const grossPay = (salary.amount || 0) + earningsSum;
+            const grossPay = (salary.amount || 0) + earningsSum + rewardsSum + overtimeSum;
 
 
-            const netPay = grossPay - deductionsSum - punishmentsSum + rewardsSum + overtimeSum;
+            const netPay = grossPay - deductionsSum - punishmentsSum;
 
             const payrollItem = new PayrollItem({
                 payrollID: payroll._id,

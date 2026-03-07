@@ -13,19 +13,21 @@ export type Payslip = {
     grossPay: number;
     netPay: number;
     status: "draft" | "approved" | "paid";
+    earnings: { description: string; amount: number }[];
     deductions: { description: string; amount: number }[];
     rewards: { description: string; amount: number }[];
     overtimes: { description: string; amount: number }[];
     punishments: { description: string; amount: number }[];
     payDate: string;
     fileUrl?: string;
-    ytdEarnings?: number;      
+    ytdEarnings?: number;
     ytdDeductions?: number;
     isAdjustment?: boolean;
     adjustmentReason?: string;
     adjustedPayslipID?: string;
-    
+
     rawPayPeriod?: { startDate: string; endDate: string };
+    rawEarnings?: { description: string; amount: number }[];
     rawDeductions?: { description: string; amount: number }[];
     rawRewards?: { description: string; amount: number }[];
     rawOvertimes?: { description: string; amount: number }[];
@@ -33,7 +35,7 @@ export type Payslip = {
 };
 
 function mapPayslip(p: any): Payslip {
-    
+
     const rawEnr = p.employeeID?.enr;
     const enrValue = (typeof rawEnr === "number" || typeof rawEnr === "string") ? rawEnr : 0;
 
@@ -57,6 +59,7 @@ function mapPayslip(p: any): Payslip {
         grossPay: p.grossPay ?? 0,
         netPay: p.netPay ?? 0,
         status: p.status ?? "draft",
+        earnings: p.earnings ?? [],
         deductions: p.deductions ?? [],
         rewards: p.rewards ?? [],
         overtimes: p.overtimes ?? [],
@@ -69,6 +72,7 @@ function mapPayslip(p: any): Payslip {
         adjustmentReason: p.adjustmentReason ?? undefined,
         adjustedPayslipID: p.adjustedPayslipID ?? undefined,
         rawPayPeriod: p.payPeriod ?? undefined,
+        rawEarnings: p.earnings ?? [],
         rawDeductions: p.deductions ?? [],
         rawRewards: p.rewards ?? [],
         rawOvertimes: p.overtimes ?? [],
@@ -202,7 +206,7 @@ export function usePayslips() {
         return newPayslip;
     };
 
-    
+
     const fetchPayrollOptions = async (): Promise<PayrollOption[]> => {
         try {
             const res = await api.get(`/payslip/eligible-payrolls`);
