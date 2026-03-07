@@ -82,7 +82,7 @@ export const createPayrollRun = async (req, res, next) => {
             payroll
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not create payroll, please try again"))
     }
 }
@@ -122,7 +122,7 @@ export const generatePayrollItems = async (req, res, next) => {
                 componentID: c._id,
                 type: c.type,
                 description: c.description || '',
-                amount: c.amount || 0
+                amount: c.value || 0
             }));
 
             const rewards = await Reward.find({
@@ -139,15 +139,20 @@ export const generatePayrollItems = async (req, res, next) => {
                 status: { $ne: 'voided' }
             });
 
+            const overtimeSum = overtimes.reduce((acc, ot) => acc + (ot.amount || 0), 0);
+
             const punishments = await Punishment.find({
                 employeeID: employee._id,
-                payrollID: payroll._id,
-                status: { $ne: 'voided' }
+                status: 'active',
+                startDate: { $lte: payroll.payPeriod.endDate },
+                endDate: { $gte: payroll.payPeriod.startDate }
             })
 
             const deductions = await Deduction.find({
                 employeeID: employee._id,
-                status: { $ne: 'voided' }
+                status: 'active',
+                startDate: { $lte: payroll.payPeriod.endDate },
+                endDate: { $gte: payroll.payPeriod.startDate }
             })
 
             const punishmentsSum = punishments.reduce(
@@ -155,20 +160,20 @@ export const generatePayrollItems = async (req, res, next) => {
                 0
             );
 
-            const overtimeSum = overtimes.reduce((acc, ot) => acc + (ot.amount || 0), 0);
-
             const earningsSum = componentBreakdown
                 .filter(c => c.type === 'earning')
                 .reduce((acc, c) => acc + (c.amount || 0), 0);
 
-            const deductionsSum = deductions
+            const componentDeductionsSum = componentBreakdown
                 .filter(c => c.type === 'deduction')
                 .reduce((acc, c) => acc + (c.amount || 0), 0);
 
-            
+            const deductionsSum = deductions.reduce((acc, d) => acc + (d.amount || 0), 0) + componentDeductionsSum;
+
+
             const grossPay = (salary.amount || 0) + earningsSum;
 
-            
+
             const netPay = grossPay - deductionsSum - punishmentsSum + rewardsSum + overtimeSum;
 
             const payrollItem = new PayrollItem({
@@ -177,7 +182,8 @@ export const generatePayrollItems = async (req, res, next) => {
                 baseSalary: salary.amount || 0,
                 rewards: rewards.map(r => r._id),
                 overtimes: overtimes.map(o => o._id),
-                punishments: punishments.map(o => o._id),
+                punishments: punishments.map(p => ({ punishmentID: p._id })),
+                deductions: deductions.map(d => ({ deductionID: d._id })),
                 totalRewards: rewardsSum,
                 totalOvertimes: overtimeSum,
                 totalDeductions: deductionsSum,
@@ -291,7 +297,7 @@ export const approvePayroll = async (req, res, next) => {
             await session.abortTransaction();
             session.endSession();
         }
-        
+
         return next(new InternalServerError("Could not approve payroll, please try again"));
     }
 };
@@ -359,7 +365,7 @@ export const markPayrollAsPaid = async (req, res, next) => {
             await session.abortTransaction();
             session.endSession();
         }
-        
+
         return next(new InternalServerError("Could not mark payroll as paid, please try again"))
     }
 }
@@ -394,7 +400,7 @@ export const rejectPayroll = async (req, res, next) => {
             message: `Payroll rejected. ${result.deletedCount} payroll items deleted.`
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not reject payroll, please try again"))
     }
 }
@@ -464,7 +470,7 @@ export const getPayrollSummary = async (req, res, next) => {
             items
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch payroll summary, please try again"))
     }
 }
@@ -512,7 +518,7 @@ export const getAllPayrolls = async (req, res, next) => {
             },
         })
     } catch (error) {
-        
+
         return next(
             new InternalServerError('Could not fetch payrolls, please try again')
         )
@@ -543,7 +549,7 @@ export const deletePayroll = async (req, res, next) => {
             message: 'Payroll deleted successfully',
         })
     } catch (error) {
-        
+
         return next(
             new InternalServerError('Could not delete payroll, please try again')
         )
@@ -564,7 +570,7 @@ export const exportPayrollCSV = async (req, res, next) => {
         if (month && year) {
             const start = new Date(Number(year), Number(month) - 1, 1);
             const end = new Date(Number(year), Number(month), 1);
-            
+
             const payrolls = await Payroll.find({ month: { $gte: start, $lt: end } }).select('_id');
             query.payrollID = { $in: payrolls.map(p => p._id) };
         }
@@ -676,7 +682,7 @@ export const getLiabilityReport = async (req, res, next) => {
             report: formattedReport
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not fetch liability report"));
     }
 }
