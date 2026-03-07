@@ -30,7 +30,7 @@ export const createOvertime = async (req, res, next) => {
             overtime
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not create overtime"))
     }
 }
@@ -79,14 +79,14 @@ export const getAllOvertimes = async (req, res, next) => {
             .skip(skip)
             .limit(limit)
             .sort({ createdAt: -1 })
-            .populate('employeeID', 'personalInfo.firstName personalInfo.lastName')
+            .populate('employeeID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName')
             .populate('payrollID', 'payrollCode')
 
 
         const formatted = overtimes.map((o) => ({
             id: o._id,
             employeeName: o.employeeID
-                ? `${o.employeeID.personalInfo.firstName} ${o.employeeID.personalInfo.lastName}`
+                ? [o.employeeID.personalInfo.firstName, o.employeeID.personalInfo.middleName, o.employeeID.personalInfo.lastName].filter(Boolean).join(' ')
                 : "—",
             payrollName: o.payrollID?.payrollCode || "N/A",
             date: o.date,

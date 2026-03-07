@@ -454,7 +454,7 @@ export const getPayrollSummary = async (req, res, next) => {
         if (!payroll) return next(new NotFoundError("Payroll not found"))
 
         const items = await PayrollItem.find({ payrollID: payroll._id })
-            .populate('employeeID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('employeeID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
             .select('employeeID baseSalary grossPay netPay totalDeductions totalRewards totalOvertimes totalPunishments status')
 
         const summary = await PayrollItem.aggregate([
@@ -617,7 +617,7 @@ export const exportPayrollCSV = async (req, res, next) => {
         }
 
         const items = await PayrollItem.find(query)
-            .populate('employeeID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('employeeID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
             .populate('payrollID', 'name month status')
             .sort({ createdAt: -1 })
             .limit(10000);
@@ -626,7 +626,7 @@ export const exportPayrollCSV = async (req, res, next) => {
         const rows = items.map(item => {
             const emp = item.employeeID;
             const payroll = item.payrollID;
-            const name = emp ? `${emp.personalInfo?.firstName || ''} ${emp.personalInfo?.lastName || ''}`.trim() : '';
+            const name = emp ? [emp.personalInfo?.firstName, emp.personalInfo?.middleName, emp.personalInfo?.lastName].filter(Boolean).join(' ') : '';
             const code = emp?.employeeCode || '';
             const runName = payroll?.payrollCode || '';
             const monthStr = payroll?.payPeriod?.startDate ? new Date(payroll.payPeriod.startDate).toISOString().slice(0, 7) : '';

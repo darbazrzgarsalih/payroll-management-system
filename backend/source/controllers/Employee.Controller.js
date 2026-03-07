@@ -39,7 +39,7 @@ export const getAllEmployees = async (req, res, next) => {
             .populate('createdBy', 'username')
             .populate('employmentInfo.departmentID', 'name')
             .populate('employmentInfo.positionID', 'title')
-            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.lastName')
+            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName')
             .populate('userID', 'username')
             .populate('shiftId', 'name')
 
@@ -109,7 +109,7 @@ export const getSingleEmployee = async (req, res, next) => {
             .populate('userID', 'username email role')
             .populate('employmentInfo.departmentID', 'name')
             .populate('employmentInfo.positionID', 'title')
-            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
 
         if (!employee) {
             return next(new NotFoundError("Employee not found."))
@@ -138,7 +138,7 @@ export const getEmployeeByCode = async (req, res, next) => {
         const employee = await Employee.findOne({ employeeCode: code })
             .populate('employmentInfo.departmentID', 'name')
             .populate('employmentInfo.positionID', 'title')
-            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.lastName')
+            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName')
 
         if (!employee) {
             return next(new NotFoundError("Employee not found."))
@@ -367,7 +367,7 @@ export const updateEmployee = async (req, res, next) => {
             { runValidators: true, new: true }
         ).populate('employmentInfo.departmentID', 'name')
             .populate('employmentInfo.positionID', 'title')
-            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.lastName')
+            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName')
 
         if (!employee) {
             return next(new NotFoundError("Employee not found."))
@@ -462,7 +462,7 @@ export const deleteEmployee = async (req, res, next) => {
 
         return res.status(200).json({
             success: true,
-            message: `${employee.personalInfo.firstName} ${employee.personalInfo.lastName} has been deleted.`
+            message: `${employee.personalInfo.firstName} ${employee.personalInfo.middleName ? employee.personalInfo.middleName + ' ' : ''}${employee.personalInfo.lastName} has been deleted.`
         })
     } catch (error) {
 
@@ -481,7 +481,7 @@ export const getEmployeeProfile = async (req, res, next) => {
         const employee = await Employee.findOne({ userID: req.user._id })
             .populate('employmentInfo.departmentID', 'name')
             .populate('employmentInfo.positionID', 'title')
-            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('employmentInfo.managerID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
 
         if (!employee) {
             return next(new NotFoundError("Employee profile not found"))

@@ -189,7 +189,7 @@ function PayrollDetails() {
                         <TableRow key={item._id}>
                           <TableCell>
                             <div className="flex flex-col">
-                              <span className="font-medium">{item.employeeID?.personalInfo?.firstName || "N/A"} {item.employeeID?.personalInfo?.lastName || ""}</span>
+                              <span className="font-medium">{[item.employeeID?.personalInfo?.firstName, item.employeeID?.personalInfo?.middleName, item.employeeID?.personalInfo?.lastName].filter(Boolean).join(' ') || "N/A"}</span>
                               <span className="text-xs text-muted-foreground">{item.employeeID?.employeeCode || "N/A"}</span>
                             </div>
                           </TableCell>
@@ -423,7 +423,7 @@ function PayrollDetails() {
                   {items.map((item) => (
                     <tr key={item._id} className="hover:bg-slate-50 transition-colors">
                       <td className="p-5 border-r-2 border-slate-100">
-                        <div className="font-black text-lg text-black uppercase leading-none">{item.employeeID?.personalInfo?.firstName || "N/A"} {item.employeeID?.personalInfo?.lastName || ""}</div>
+                        <div className="font-black text-lg text-black uppercase leading-none">{[item.employeeID?.personalInfo?.firstName, item.employeeID?.personalInfo?.middleName, item.employeeID?.personalInfo?.lastName].filter(Boolean).join(' ') || "N/A"}</div>
                         <div className="text-[10px] font-black text-slate-400 tracking-widest uppercase mt-1">{item.employeeID?.employeeCode || "N/A"}</div>
                       </td>
                       <td className="p-5 border-r-2 border-slate-100 font-bold text-slate-700 italic">{formatCurrency(item.baseSalary)}</td>

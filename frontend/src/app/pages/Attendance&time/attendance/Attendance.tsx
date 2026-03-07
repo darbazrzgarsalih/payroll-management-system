@@ -236,7 +236,7 @@ function Attendance() {
         _id: atn._id,
         enr: (page - 1) * limit + index + 1,
         employeeName: atn.employeeID
-            ? `${atn.employeeID.personalInfo?.firstName || ''} ${atn.employeeID.personalInfo?.lastName || ''}`.trim()
+            ? [atn.employeeID.personalInfo?.firstName, atn.employeeID.personalInfo?.middleName, atn.employeeID.personalInfo?.lastName].filter(Boolean).join(' ')
             : '—',
         employeeCode: atn.employeeID?.employeeCode || '—',
         date: atn.date,

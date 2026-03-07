@@ -105,7 +105,7 @@ export function EditSalary({
 }: any) {
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="!max-w-3xl w-full">
+            <DialogContent className="max-w-3xl! p-0 overflow-hidden border-none shadow-2xl">
                 <DialogHeader>
                     <DialogTitle>Edit salary</DialogTitle>
                     <DialogDescription>edit salary informations below.</DialogDescription>

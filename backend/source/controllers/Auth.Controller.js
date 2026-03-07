@@ -156,7 +156,7 @@ export const getUserProfile = async (req, res, next) => {
             populate: [
                 { path: 'employmentInfo.departmentID', select: 'name' },
                 { path: 'employmentInfo.positionID', select: 'title' },
-                { path: 'employmentInfo.managerID', select: 'personalInfo.firstName personalInfo.lastName' }
+                { path: 'employmentInfo.managerID', select: 'personalInfo.firstName personalInfo.middleName personalInfo.lastName' }
             ]
         })
 

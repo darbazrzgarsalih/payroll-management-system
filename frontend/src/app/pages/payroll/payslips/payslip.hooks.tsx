@@ -40,9 +40,10 @@ function mapPayslip(p: any): Payslip {
     const enrValue = (typeof rawEnr === "number" || typeof rawEnr === "string") ? rawEnr : 0;
 
     // Employee name: try personalInfo first, then top-level fields
-    const firstName = p.employeeID?.personalInfo?.firstName ?? p.employeeID?.firstName;
-    const lastName = p.employeeID?.personalInfo?.lastName ?? p.employeeID?.lastName;
-    const employeeName = firstName && lastName ? `${firstName} ${lastName}` : "—";
+    const firstName = p.employeeID?.personalInfo?.firstName ?? p.employeeID?.firstName ?? "";
+    const middleName = p.employeeID?.personalInfo?.middleName ?? "";
+    const lastName = p.employeeID?.personalInfo?.lastName ?? p.employeeID?.lastName ?? "";
+    const employeeName = [firstName, middleName, lastName].filter(Boolean).join(" ") || "—";
 
     return {
         id: p._id,

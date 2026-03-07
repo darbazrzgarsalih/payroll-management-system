@@ -63,7 +63,7 @@ export const createSalary = async (req, res, next) => {
 
         await salary.save();
 
-        await salary.populate('employeeID', 'personalInfo.firstName personalInfo.lastName employeeCode');
+        await salary.populate('employeeID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode');
         await salary.populate('payGradeID', 'name code');
 
         return res.status(201).json({
@@ -107,7 +107,7 @@ export const getSalaries = async (req, res, next) => {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .populate('employeeID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('employeeID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
             .populate('payGradeID', 'name code')
             .populate('createdBy', 'username role')
             .populate('updatedBy', 'username role')
@@ -156,7 +156,7 @@ export const getSingleSalary = async (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(id)) return next(new BadRequestError("Invalid Salary ID."));
 
         const salary = await Salary.findById(id)
-            .populate('employeeID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('employeeID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
             .populate('payGradeID', 'name code')
             .populate('createdBy', 'username')
             .populate('updatedBy', 'username');

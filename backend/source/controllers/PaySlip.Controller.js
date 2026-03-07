@@ -136,16 +136,19 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
         if (existing)
             return next(new BadRequestError('Payslips already generated for this payroll.'));
 
-        const payrollItems = await PayrollItem.find({ payrollID, status: 'paid' })
+        const payrollItems = await PayrollItem.find({
+            payrollID,
+            status: { $in: ['approved', 'paid'] }
+        })
             .populate('payrollID', 'name payrollCode payPeriod')
-            .populate('employeeID', 'firstName lastName enr personalInfo')
+            .populate('employeeID', 'personalInfo firstName lastName enr')
             .populate('rewards')
             .populate('overtimes')
             .populate('deductions.deductionID')
             .populate('punishments.punishmentID');
 
         if (payrollItems.length === 0)
-            return next(new NotFoundError('No paid payroll items found for this payroll'));
+            return next(new NotFoundError('No approved or paid payroll items found for this payroll'));
 
         const jobId = uuidv4();
         await createDbJob(jobId, payrollID, req.user._id);
@@ -180,11 +183,11 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
                                 amount: c.amount || 0
                             })),
                         rewards: (item.rewards ?? []).map(r => ({
-                            description: r.type || r.reason || 'Reward',
+                            description: r.reason || r.type || 'Reward',
                             amount: r.amount || 0
                         })),
                         overtimes: (item.overtimes ?? []).map(o => ({
-                            description: `Overtime (${o.hours}h)`,
+                            description: `Overtime (${o.hours || 0}h)`,
                             amount: o.amount || 0
                         })),
                         deductions: [
@@ -194,19 +197,33 @@ export const generatePaySlipsForPayroll = async (req, res, next) => {
                                     description: c.description || 'Deduction',
                                     amount: c.amount || 0
                                 })),
-                            ...(item.deductions ?? []).map(d => ({
-                                description: d.deductionID?.name || 'Deduction',
-                                amount: d.deductionID?.calculationType === 'percentage'
-                                    ? (item.baseSalary * (d.deductionID.percentage || 0)) / 100
-                                    : d.deductionID?.amount || 0
-                            }))
+                            ...(item.deductions ?? []).map(d => {
+                                const ded = d.deductionID;
+                                let amt = d.amount || 0;
+                                if (!amt && ded) {
+                                    amt = ded.calculationType === 'percentage'
+                                        ? (item.baseSalary * (ded.percentage || 0)) / 100
+                                        : ded.amount || 0;
+                                }
+                                return {
+                                    description: ded?.name || 'Deduction',
+                                    amount: amt
+                                };
+                            })
                         ],
-                        punishments: (item.punishments ?? []).map(p => ({
-                            description: p.punishmentID?.name || p.punishmentID?.type || 'Punishment',
-                            amount: p.punishmentID?.calculationType === 'percentage'
-                                ? (item.baseSalary * (p.punishmentID.percentage || 0)) / 100
-                                : p.punishmentID?.amount || 0
-                        })),
+                        punishments: (item.punishments ?? []).map(p => {
+                            const pun = p.punishmentID;
+                            let amt = p.amount || 0;
+                            if (!amt && pun) {
+                                amt = pun.calculationType === 'percentage'
+                                    ? (item.baseSalary * (pun.percentage || 0)) / 100
+                                    : pun.amount || 0;
+                            }
+                            return {
+                                description: pun?.name || pun?.type || 'Punishment',
+                                amount: amt
+                            };
+                        }),
                         grossPay: item.grossPay,
                         netPay: item.netPay,
                         payDate: item.paymentDate || new Date(),
@@ -357,6 +374,7 @@ export const getAllPayslips = async (req, res, next) => {
                             { 'employeeID.firstName': regex },
                             { 'employeeID.lastName': regex },
                             { 'employeeID.personalInfo.firstName': regex },
+                            { 'employeeID.personalInfo.middleName': regex },
                             { 'employeeID.personalInfo.lastName': regex },
                             { 'payrollID.payrollCode': regex },
                             { 'payrollID.name': regex },
@@ -511,7 +529,7 @@ export const updatePayslipStatus = async (req, res, next) => {
                 const emp = await Employee.findById(payslip.employeeID).select('personalInfo');
                 const email = emp?.personalInfo?.email;
                 const empName = emp
-                    ? `${emp.personalInfo?.firstName ?? ''} ${emp.personalInfo?.lastName ?? ''}`.trim()
+                    ? [emp.personalInfo?.firstName, emp.personalInfo?.middleName, emp.personalInfo?.lastName].filter(Boolean).join(' ')
                     : 'Employee';
 
                 if (email) {

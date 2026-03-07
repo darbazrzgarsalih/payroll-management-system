@@ -70,7 +70,7 @@ export const checkIn = async (req, res, next) => {
         });
 
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not check in"));
     }
 };
@@ -97,7 +97,7 @@ export const checkOut = async (req, res, next) => {
         let shiftEndStr = attendance.shiftEndSnapshot;
         let breakMinutes = attendance.shiftBreakMinutesSnapshot || 0;
 
-        
+
         if (!shiftStartStr || !shiftEndStr) {
             const employee = await Employee.findById(employeeID).populate('shiftId');
             if (employee?.shiftId) {
@@ -105,7 +105,7 @@ export const checkOut = async (req, res, next) => {
                 shiftEndStr = employee.shiftId.endTime;
                 breakMinutes = employee.shiftId.breakMinutes || 0;
             } else {
-                
+
                 shiftStartStr = "09:00";
                 shiftEndStr = "17:00";
             }
@@ -144,7 +144,7 @@ export const checkOut = async (req, res, next) => {
 
         await attendance.save();
 
-        
+
         if (overtimeHours > 0 && attendance.status !== 'late') {
             try {
                 const activePayroll = await mongoose.model('Payroll').findOne({
@@ -157,8 +157,8 @@ export const checkOut = async (req, res, next) => {
                     employeeID: attendance.employeeID,
                     date: attendance.date,
                     hours: attendance.overtimeHours,
-                    rate: 8, 
-                    multiplier: 1.25, 
+                    rate: 8,
+                    multiplier: 1.25,
                     payrollID: activePayroll ? activePayroll._id : undefined,
                     status: 'pending',
                     remarks: "Automatically created from attendance check-out overtime",
@@ -297,7 +297,7 @@ export const getAttendanceReport = async (req, res, next) => {
         const skip = (page - 1) * limit;
 
         const attendances = await Attendance.find(query)
-            .populate('employeeID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('employeeID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
             .sort({ date: -1 })
             .skip(skip)
             .limit(limit)
@@ -360,11 +360,11 @@ export const updateAttendance = async (req, res, next) => {
             return next(new NotFoundError("Attendance not found"));
         }
 
-        
-        
-        
-        
-        
+
+
+
+
+
 
         if (updates.timeIn || updates.timeOut) {
             const timeIn = updates.timeIn ? new Date(updates.timeIn) : attendance.timeIn;
@@ -420,14 +420,14 @@ export const exportAttendanceCSV = async (req, res, next) => {
         if (from && to) query.date = { $gte: new Date(from), $lte: new Date(to) };
 
         const records = await Attendance.find(query)
-            .populate('employeeID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('employeeID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
             .sort({ date: -1 })
             .limit(10000);
 
         const header = ['Date', 'Employee Code', 'Employee Name', 'Status', 'Check In', 'Check Out', 'Hours Worked', 'Overtime Hours'];
         const rows = records.map(a => {
             const emp = a.employeeID;
-            const name = emp ? `${emp.personalInfo?.firstName || ''} ${emp.personalInfo?.lastName || ''}`.trim() : '';
+            const name = emp ? [emp.personalInfo?.firstName, emp.personalInfo?.middleName, emp.personalInfo?.lastName].filter(Boolean).join(' ') : '';
             const code = emp?.employeeCode || '';
             const date = a.date ? new Date(a.date).toISOString().split('T')[0] : '';
             const timeIn = a.timeIn ? new Date(a.timeIn).toISOString().replace('T', ' ').slice(0, 16) : '';

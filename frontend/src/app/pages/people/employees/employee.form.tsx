@@ -71,7 +71,7 @@ export const CreateEmployee = () => {
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="!max-w-9xl min-h-[50%] md:max-w-7xl w-full">
+            <DialogContent className="max-w-9xl! max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-semibold text-foreground/90">
                         Create New Employee

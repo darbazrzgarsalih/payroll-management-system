@@ -54,7 +54,7 @@ export default function Account() {
                         )}
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold">{profile.firstName} {profile.lastName}</h3>
+                        <h3 className="text-xl font-bold">{[profile.firstName, profile.middleName, profile.lastName].filter(Boolean).join(' ')}</h3>
                         <p className="text-muted-foreground">@{profile.username}</p>
                         <div className="mt-2 text-sm space-y-1">
                             <p><strong>Email:</strong> {profile.email}</p>
@@ -84,7 +84,7 @@ export default function Account() {
                             <p className="text-muted-foreground mb-1">Manager</p>
                             <p className="font-medium">
                                 {profile.employee?.employmentInfo?.managerID
-                                    ? `${profile.employee.employmentInfo.managerID.personalInfo.firstName} ${profile.employee.employmentInfo.managerID.personalInfo.lastName}`
+                                    ? [profile.employee.employmentInfo.managerID.personalInfo.firstName, profile.employee.employmentInfo.managerID.personalInfo.middleName, profile.employee.employmentInfo.managerID.personalInfo.lastName].filter(Boolean).join(' ')
                                     : "N/A"}
                             </p>
                         </div>

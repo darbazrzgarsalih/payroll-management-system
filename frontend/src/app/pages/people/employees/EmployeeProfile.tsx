@@ -315,7 +315,7 @@ export default function EmployeeProfile() {
                             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <InfoItem label="Department" value={employee.employmentInfo?.departmentID?.name} icon={UserGroupIcon} />
                                 <InfoItem label="Position" value={employee.employmentInfo?.positionID?.title} icon={Briefcase01Icon} />
-                                <InfoItem label="Manager" value={employee.employmentInfo?.managerID ? `${employee.employmentInfo.managerID.personalInfo?.firstName} ${employee.employmentInfo.managerID.personalInfo?.lastName}` : "No Manager"} />
+                                <InfoItem label="Manager" value={employee.employmentInfo?.managerID ? [employee.employmentInfo.managerID.personalInfo?.firstName, employee.employmentInfo.managerID.personalInfo?.middleName, employee.employmentInfo.managerID.personalInfo?.lastName].filter(Boolean).join(' ') : "No Manager"} />
                                 <InfoItem label="Employment Type" value={employee.employmentInfo?.employmentType} />
                                 <InfoItem label="Work Schedule" value={employee.employmentInfo?.workSchedule} />
                             </CardContent>

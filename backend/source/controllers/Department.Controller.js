@@ -55,7 +55,7 @@ export const getSingleDepartment = async (req, res, next) => {
         }
 
         const department = await Department.findOne({ code })
-            .populate('managerID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('managerID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
             .populate('createdBy', 'username')
             .populate('updatedBy', 'username')
 
@@ -88,7 +88,7 @@ export const getDepartmentById = async (req, res, next) => {
         }
 
         const department = await Department.findById(id)
-            .populate('managerID', 'personalInfo.firstName personalInfo.lastName employeeCode')
+            .populate('managerID', 'personalInfo.firstName personalInfo.middleName personalInfo.lastName employeeCode')
             .populate('createdBy', 'username')
             .populate('updatedBy', 'username')
 
