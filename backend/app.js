@@ -10,6 +10,7 @@ import { apiLimiter } from './source/middlewares/Rate.Limitter.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import mongoose from 'mongoose'
+import { registerUser } from './source/seeders/Admin.Seeder.js'
 dotenv.config()
 
 const __filename = fileURLToPath(import.meta.url)
