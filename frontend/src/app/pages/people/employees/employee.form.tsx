@@ -439,21 +439,6 @@ export function EditEmployee({
                         required
                     />
                     <SelectField
-                        name="role"
-                        label="Role"
-                        value={form.role}
-                        options={[
-                            { value: "super_admin", label: "Super Admin" },
-                            { value: "admin", label: "Admin" },
-                            { value: "hr_manager", label: "HR Manager" },
-                            { value: "payroll_manager", label: "Payroll Manager" },
-                            { value: "overtime_manager", label: "Overtime Manager" },
-                            { value: "punishment_manager", label: "Punishment Manager" },
-                            { value: "employee", label: "Employee" },
-                        ]}
-                        onChange={onSelectChange ?? (() => { })}
-                    />
-                    <SelectField
                         name="gender"
                         label="Gender"
                         value={form.gender}

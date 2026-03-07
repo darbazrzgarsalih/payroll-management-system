@@ -347,7 +347,6 @@ type EmployeeEditForm = {
     positionID: string
     status: string
     phone: string
-    role: string
 }
 
 export function useEditEmployee({ refetch }: { refetch: () => void }) {
@@ -369,8 +368,7 @@ export function useEditEmployee({ refetch }: { refetch: () => void }) {
         departmentID: "",
         positionID: "",
         status: "",
-        phone: "",
-        role: ""
+        phone: ""
     })
 
     const openEdit = (employee: any) => {
@@ -387,8 +385,7 @@ export function useEditEmployee({ refetch }: { refetch: () => void }) {
             departmentID: employee.departmentID ?? "",
             positionID: employee.positionID ?? "",
             status: employee.status ?? "active",
-            phone: employee.phone ?? "",
-            role: employee.role ?? "employee"
+            phone: employee.phone ?? ""
         }
         setForm(initialData)
         setInitialForm(initialData)
@@ -417,7 +414,7 @@ export function useEditEmployee({ refetch }: { refetch: () => void }) {
     const submitEdit = async () => {
         if (!employeeId) return
 
-        if (initialForm && JSON.stringify(form) === JSON.stringify(initialForm)) {
+        if (!avatarFile && initialForm && JSON.stringify(form) === JSON.stringify(initialForm)) {
             toast.info("no update data provided")
             return
         }
@@ -438,7 +435,6 @@ export function useEditEmployee({ refetch }: { refetch: () => void }) {
         if (form.status) formData.append('employmentInfo.status', form.status)
         if (form.departmentID) formData.append('employmentInfo.departmentID', form.departmentID)
         if (form.positionID) formData.append('employmentInfo.positionID', form.positionID)
-        if (form.role) formData.append('role', form.role)
         if (avatarFile) formData.append('avatar', avatarFile)
 
         try {
