@@ -8,7 +8,6 @@ export type LeaveTypeRow = {
     enr: number
     name: string,
     defaultDays: string,
-    requiresApproval?: boolean,
     status: string,
 }
 
@@ -22,7 +21,6 @@ export const LeaveTypeColumns = ({
         { header: "ENR", accessor: "enr" },
         { header: "NAME", accessor: 'name' },
         { header: "DEFAULT DAYS", accessor: 'defaultDays' },
-        { header: "REQUIRES APPROVAL", accessor: 'requiresApproval' },
         { header: "STATUS", accessor: 'status' },
         {
             header: "ACTIONS",

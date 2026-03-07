@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input"
 
 export const ApplyLeave = () => {
     const { employees } = useEmployees()
-    const [leaveTypes, setLeaveTypes] = useState<{ id: string, name: string }[]>([])
+    const [leaveTypes, setLeaveTypes] = useState<{ id?: string, _id?: string, name: string }[]>([])
     const {
         loading,
         error,
@@ -92,7 +92,7 @@ export const ApplyLeave = () => {
                             name="leaveTypeID"
                             value={form.leaveTypeID}
                             options={leaveTypes.map(lt => ({
-                                value: lt.id,
+                                value: lt._id || lt.id || "",
                                 label: lt.name,
                             }))}
                             onChange={handleSelectChange}

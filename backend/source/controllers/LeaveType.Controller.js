@@ -34,7 +34,7 @@ export const createLeaveType = async (req, res, next) => {
         })
     } catch (error) {
 
-        
+
         return next(new InternalServerError("Could not create leave type"))
     }
 }
@@ -43,7 +43,7 @@ export const getAllLeaveTypes = async (req, res, next) => {
     try {
         const { name, code, status } = req.query;
         const page = Number(req.query.page || 1)
-        const limit = Number(req.query.limit || 1)
+        const limit = Number(req.query.limit || 100)
         const skip = (page - 1) * limit
 
         let queryObject = {}
@@ -54,7 +54,7 @@ export const getAllLeaveTypes = async (req, res, next) => {
             queryObject.code = { $regex: code, $options: 'i' }
         }
 
-        if(status) {
+        if (status) {
             queryObject.status = status
         }
 
