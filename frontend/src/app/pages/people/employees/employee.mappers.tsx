@@ -17,6 +17,7 @@ export function mapEmployeesToRows(
         department: TextItem(emp.department ?? "No department"),
         position: TextItem(emp.position ?? "No position"),
         gender: TextItem(emp.gender ?? "Not provided"),
+        shift: TextItem(emp.shift ?? "No shift"),
         address: TextItem(
             emp.address?.country && emp.address?.city
                 ? `${emp.address.country}, ${emp.address.city}`
