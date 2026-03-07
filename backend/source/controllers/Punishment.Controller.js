@@ -29,7 +29,7 @@ export const getAllPunishments = async (req, res, next) => {
             queryObject.frequency = frequency
         }
 
-        if(status) {
+        if (status) {
             queryObject.status = status
         }
         const punishments = await Punishment.find(queryObject)
@@ -105,8 +105,8 @@ export const createPunishment = async (req, res, next) => {
     try {
         const { employeeID, name, type, amount, startDate, endDate } = req.body;
 
-        if (!employeeID || !name || !type || !amount || !startDate || !endDate) {
-            return next(new BadRequestError("EmployeeID, name, type, amount, startDate and endDate are required fields"))
+        if (!employeeID || !name || !type || !amount || !startDate) {
+            return next(new BadRequestError("EmployeeID, name, type, amount, and startDate are required fields"))
         }
         if (!mongoose.Types.ObjectId.isValid(employeeID)) {
             return next(new BadRequestError("Invalid employee ID"))
@@ -139,8 +139,8 @@ export const createPunishment = async (req, res, next) => {
             punishment
         })
     } catch (error) {
-        
-        return next(new InternalServerError("Could not create punishment"))
+        console.error("Create Punishment Error:", error);
+        return next(new InternalServerError(error.message || "Could not create punishment"))
     }
 }
 
@@ -193,7 +193,7 @@ export const updatePunishment = async (req, res, next) => {
             punishment
         })
     } catch (error) {
-        
+
         return next(new InternalServerError("Could not update punishment"))
     }
 }

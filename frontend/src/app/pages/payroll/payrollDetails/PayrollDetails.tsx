@@ -252,6 +252,18 @@ function PayrollDetails() {
                   <span className="font-medium">{formatCurrency(payroll.totalGrossPay)}</span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-sm">Rewards</span>
+                  <span className="font-medium text-green-500">+{formatCurrency(payroll.totalRewards || 0)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Overtimes</span>
+                  <span className="font-medium text-blue-500">+{formatCurrency(payroll.totalOvertimes || 0)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Punishments</span>
+                  <span className="font-medium text-orange-500">-{formatCurrency(payroll.totalPunishments || 0)}</span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-sm">Deductions</span>
                   <span className="font-medium text-red-500">{formatCurrency(payroll.totalDeductions)}</span>
                 </div>
@@ -355,21 +367,33 @@ function PayrollDetails() {
           { }
           <div className="relative">
             <div className="absolute inset-0 bg-slate-50 -rotate-1 rounded-3xl -z-10" />
-            <div className="grid grid-cols-3 gap-0 border-2 border-slate-200 bg-white rounded-2xl overflow-hidden">
-              <div className="p-10 text-center border-r-2 border-slate-200">
+            <div className="grid grid-cols-5 gap-0 border-2 border-slate-200 bg-white rounded-2xl overflow-hidden">
+              <div className="p-6 text-center border-r-2 border-slate-200">
                 <p className="text-slate-400 uppercase font-black text-[10px] mb-3 tracking-[0.2em]">Total Gross</p>
-                <p className="text-4xl font-black tracking-tighter">{formatCurrency(payroll.totalGrossPay)}</p>
+                <p className="text-2xl font-black tracking-tighter">{formatCurrency(payroll.totalGrossPay)}</p>
               </div>
-              <div className="p-10 text-center border-r-2 border-slate-200 bg-slate-50/50">
-                <p className="text-slate-400 uppercase font-black text-[10px] mb-3 tracking-[0.2em]">Total Deductions</p>
-                <p className="text-4xl font-black text-red-600 tracking-tighter">{formatCurrency(payroll.totalDeductions)}</p>
+              <div className="p-6 text-center border-r-2 border-slate-200 bg-slate-50/50">
+                <p className="text-slate-400 uppercase font-black text-[10px] mb-3 tracking-[0.2em]">Rewards</p>
+                <p className="text-2xl font-black text-green-600 tracking-tighter">+{formatCurrency(payroll.totalRewards || 0)}</p>
               </div>
-              <div className="bg-slate-900 p-10 text-center">
-                <p className="text-slate-400 uppercase font-black text-[10px] mb-3 tracking-[0.2em]">Net Payable</p>
-                <p className="text-5xl font-black text-white tracking-tighter">
-                  {formatCurrency(payroll.totalNetPay)}
-                </p>
+              <div className="p-6 text-center border-r-2 border-slate-200">
+                <p className="text-slate-400 uppercase font-black text-[10px] mb-3 tracking-[0.2em]">Overtimes</p>
+                <p className="text-2xl font-black text-blue-600 tracking-tighter">+{formatCurrency(payroll.totalOvertimes || 0)}</p>
               </div>
+              <div className="p-6 text-center border-r-2 border-slate-200 bg-slate-50/50">
+                <p className="text-slate-400 uppercase font-black text-[10px] mb-3 tracking-[0.2em]">Punishments</p>
+                <p className="text-2xl font-black text-orange-600 tracking-tighter">-{formatCurrency(payroll.totalPunishments || 0)}</p>
+              </div>
+              <div className="p-6 text-center border-r-2 border-slate-200">
+                <p className="text-slate-400 uppercase font-black text-[10px] mb-3 tracking-[0.2em]">Deductions</p>
+                <p className="text-2xl font-black text-red-600 tracking-tighter">-{formatCurrency(payroll.totalDeductions)}</p>
+              </div>
+            </div>
+            <div className="mt-4 bg-slate-900 p-8 text-center rounded-2xl">
+              <p className="text-slate-400 uppercase font-black text-[10px] mb-3 tracking-[0.2em]">Net Payable</p>
+              <p className="text-5xl font-black text-white tracking-tighter">
+                {formatCurrency(payroll.totalNetPay)}
+              </p>
             </div>
           </div>
 

@@ -248,9 +248,12 @@ export const approvePayroll = async (req, res, next) => {
                 acc.gross += Number(item.grossPay) || 0
                 acc.net += Number(item.netPay) || 0
                 acc.deductions += Number(item.totalDeductions) || 0
+                acc.rewards += Number(item.totalRewards) || 0
+                acc.overtimes += Number(item.totalOvertimes) || 0
+                acc.punishments += Number(item.totalPunishments) || 0
                 return acc
             },
-            { gross: 0, net: 0, deductions: 0 }
+            { gross: 0, net: 0, deductions: 0, rewards: 0, overtimes: 0, punishments: 0 }
         )
 
         session = await mongoose.startSession();
@@ -271,6 +274,9 @@ export const approvePayroll = async (req, res, next) => {
         payroll.totalGrossPay = totals.gross;
         payroll.totalNetPay = totals.net;
         payroll.totalDeductions = totals.deductions;
+        payroll.totalRewards = totals.rewards;
+        payroll.totalOvertimes = totals.overtimes;
+        payroll.totalPunishments = totals.punishments;
         payroll.totalEmployees = items.length;
         payroll.status = 'approved';
         payroll.approvedAt = new Date();
