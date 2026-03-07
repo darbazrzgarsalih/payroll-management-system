@@ -22,7 +22,7 @@ export function useRewards() {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<null | string>(null)
     const [search, setSearch] = useState<string>("")
-    const [status, setStatus] = useState<string>("")
+    const [status, setStatus] = useState<string>("all")
 
     const fetchRewards = async () => {
         setLoading(true)
@@ -34,7 +34,7 @@ export function useRewards() {
                     page,
                     limit,
                     search: search || undefined,
-                    status: status || undefined
+                    status: status === "all" ? undefined : status
                 }
             })
             setRewards(res.data.rewards)
